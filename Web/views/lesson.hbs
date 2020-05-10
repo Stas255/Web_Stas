@@ -1,0 +1,103 @@
+<div class="conteiner">
+    <div class="row">
+        <div class="col-12">
+            <div class="col-12 my-3">
+                <h1 class="text-center">Список кімнат </h1>
+            </div>
+            {{#if IsAdmin}}
+            <div class="col-12 my-3">
+                <button type="button" class="btn btn-add white" data-toggle="modal" data-target="#addgr">
+                    Додати урок
+                </button>
+                {{/if}}
+
+
+                <div class="inner cover">
+
+                    <table class="table" id="Lesson_table">
+                        <thead>
+                            <tr>
+                                <th scope="col">Кімната</th>
+                                <th scope="col">Data</th>
+                                <th scope="col">Відвідування</th>
+                                {{#if IsAdmin}}
+                                <th scope="col"></th>
+                                <th scope="col"></th>
+                                {{/if}}
+                            </tr>
+                        </thead>
+                    </table>
+                            <script id="entry-template" type="text/x-handlebars-template"></script>
+                            <script>
+                                window.onload = function () {
+
+                                    var grid = {{ grid }};
+                                    let data = JSON.stringify({
+                                        find: "lesson",
+                                        where: "WHERE gr_id = " + grid,
+                                        dictinct:"less_id,gr_id,room,DATE_FORMAT(dt , ' %d-%c-%Y %T') as dt"
+                                    });
+                                    let request = new XMLHttpRequest();
+                                    request.open("POST", "/dbSerch", true);
+                                    request.setRequestHeader("Content-Type", "application/json");
+                                    var result;
+                                    setTimeout(request.addEventListener("load", function () {
+                                        // получаем и парсим ответ сервера
+                                        let receivedUser = JSON.parse(request.response);
+                                        result = receivedUser;
+                                        CreateTable_lesson("Lesson_table", result);
+
+                                    }), 5000);
+                                    request.send(data);
+                                };
+                                    function CreateTable_lesson(idDivTable, results) {
+                                    var table = document.getElementById(idDivTable);
+                                    var tbody = document.createElement("tbody");
+                                    results.forEach(function (item) { AddArrayInTbody_infor(tbody, item) });
+                                    table.appendChild(tbody);
+                                }
+
+                                function AddArrayInTbody_infor(tbody, array) {
+                                    var tr = document.createElement("tr");
+                                    AddTHTextInTr(tr, array.room);
+                                    AddTDTextInTr(tr, array.dt);
+                                    CreateButton_inforInForm(tr, "primary", [array.gr_id, array.less_id], "Go_people", "eye", ["grid", "lessid"], "get");
+                                    {{#if IsAdmin}}
+                                    CreateButton_inforInForm(tr, "warning", array.less_id, "Go_editlesson", "pen", "lessid", "get");
+                                    CreateButton_inforInForm(tr, "danger", array.less_id, "Go_delllesson", "trash-alt", "lessid", "post");
+                                    {{/if}}
+                                    tbody.appendChild(tr);
+                                }
+                            </script>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {{#if IsAdmin}}
+    <!-- Modal -->
+    <div class="modal fade" id="addgr" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form action="/addlesson" method="post" class="w-100">
+                        <input type="number" hidden name='gr_id' id="grid" value="{{grid}}">
+                        <input class="w-100 form-control" maxlength="10" id ="room" name="room" placeholder="Кімната" type="text">
+                        <input class="w-100" type="datetime-local" id="dt" name="date">
+                        <div class="modal-footer">
+                            <button type="reset" class="btn btn-outline-secondary" data-dismiss="modal">Close</button>
+                            <button type="submit" class="btn btn-outline-primary">Save changes</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{{/if}}

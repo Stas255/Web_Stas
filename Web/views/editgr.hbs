@@ -1,0 +1,40 @@
+<h1 class="text-center">Редагування групи <?php echo $row['name']; ?></h1>
+
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-6">
+            <form action="/editgrproc" method="post">
+                <label for="full_name">Група</label>
+                <input type="text" class="w-100" name="name" id="edgr_name" value=" ">
+                <label for="full_name">Опис</label>
+                <input type="text" class="w-100" name="des" id="edgr_des" value=" ">
+                <input type="number" hidden name="id" value="{{ grid }}">
+                <div class="modal-footer my-3">
+                    <button type="reset" class="btn btn-outline-secondary">Отмена</button>
+                    <button type="submit" class="btn btn-outline-primary">Зберегти</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<script id="entry-template" type="text/x-handlebars-template"></script>
+<script>
+    window.onload = function () {
+    var gr_id = {{ grid }};
+    let data = JSON.stringify({
+        grid: gr_id
+    });  
+    let request = new XMLHttpRequest();
+    request.open("POST", "/editgr", true);
+    request.setRequestHeader("Content-Type", "application/json");
+    var result;
+    setTimeout(request.addEventListener("load", function () {
+        // получаем и парсим ответ сервера
+        let receivedUser = JSON.parse(request.response);
+        result = receivedUser[0];
+        document.getElementById("edgr_name").value = result.name;
+        document.getElementById("edgr_des").value = result.description;
+    }), 5000);
+    request.send(data);
+    }
+</script>

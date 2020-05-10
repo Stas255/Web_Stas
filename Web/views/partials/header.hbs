@@ -1,0 +1,55 @@
+<script src="javascripts/MainJS.js"></script>
+<nav class="navbar-masthead clearfix navbar navbar-expand-lg navbar-light bg-light  navbar-expand-md" style="background-image:url(img/back2.jpg); background-position: center; background-size: cover; font-size:18px;font-weight: 600;">
+
+    <img src="img/logo2.png" alt="E-school logo" class="rounded float-left" height="42" width="42" style="height: 120px; width: 210px; margin: -10px 50px;">
+
+    <button class="navbar-toggler collapsed" type="button" data-toggle="collapse" data-target="#navbarNav">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse center-top" id="navbarNav">
+        <ul class="list-inline navbar-nav mr-auto">
+            <li class="nav-item active">
+                <a class="nav-link" style="color: white;" href="/index">РОЗКЛАД</a>
+            </li>
+
+            <li class="nav-item active">
+                <a class="nav-link" style="color: white;" href="/infor">Групи</a>
+            </li>
+            <div id="AdminHeader">
+
+            </div>
+            {{#if IsAdmin}}
+            <form class="form-inline mt-0 mt-md-0">
+                <button type="button" class="btn btn-add" data-toggle="modal" data-target="#addchild">Додати учня</button>
+            </form>
+            <form class="form-inline mt-0 mt-md-0">
+                <button type="button" class="btn btn-add" data-toggle="modal" data-target="#dellid">Видалити ref_id</button>
+            </form>
+            {{/if}}
+
+        </ul>
+        {{#if IsAdmin}}
+        <form class="form-inline mt-2 mt-md-0  navbar-nav col-auto " method="post" action="/logout">
+            <a onclick="Exit()">
+                <button class="btn btn-lg   border solid 40px;" type="submit" >
+                    <i class="fas fa-arrow-circle-left"></i>
+                    Вийти
+                </button>
+            </a>
+        </form>
+        {{else}}
+        <form class="form-inline mt-2 mt-md-0  navbar-nav col-auto ">
+            <a href="" data-target="#modalLoginForm" data-toggle="modal">
+                <button class="btn btn-lg   border solid 40px;" data-toggle="modal" data-target="#exampleModal" type="button">
+                    <i class="fas fa-arrow-circle-right"></i>
+                    УВІЙТИ
+                </button>
+            </a>
+        </form>
+        {{/if}}
+    </div>
+</nav>
+<div class="img-fon" style="background: white; background-position: center; background-size: cover; font-size:18px;font-weight: 600; border: 1px transparent solid;">
+    <div class="col-12 my-3">
+        

@@ -1,0 +1,136 @@
+<script src="javascripts/JavaScript_test.js"></script>
+<script>
+    window.onload = function () {
+        var day = new Date();
+        var daytest = CheckCreateSession("index_dateTimeNow", day.toISOString().substring(0, 10));
+        document.getElementById("dateTimeNow").setAttribute("min", day.toISOString().substring(0, 10));
+        document.getElementById("dateTimeNow").value = daytest;
+        document.getElementById("dateTimeEnd").setAttribute("min", day.toISOString().substring(0, 10));
+        console.log(new Date(daytest));
+        var daytest2 = new Date(daytest);
+        daytest2.setDate(daytest2.getDate() + 7);
+        daytest2 = CheckCreateSession("index_dateTimeEnd", daytest2.toISOString().substring(0, 10));
+        document.getElementById("dateTimeEnd").value = daytest2;
+        AddSelectGroup("gr_id");
+        AddSelectRoom("room");
+        CheckAndCreateTable_index();
+    };
+
+    function CheckAndCreateTable_index() {
+        var gr_id = localStorage.getItem("gr_id");
+        var room = localStorage.getItem("room");
+        if (gr_id != "" || room != "") {
+            let dateNow = localStorage.getItem("index_dateTimeNow");
+            let dateEnd = localStorage.getItem("index_dateTimeEnd");
+            let group = localStorage.getItem("gr_id");
+            let room = localStorage.getItem("room");
+            let data = JSON.stringify({
+                dateNow: dateNow,
+                dateEnd: dateEnd,
+                group: group,
+                room: room
+            });
+            Post_CreateTable_index(data,false);
+        }
+    }
+
+    function CheckGroupAndRoom(id) {
+        var x = CheckCreateSession(id, "");
+        if (x != "") {
+            choiseOption(id, x);
+        }
+    }
+
+    function choiseOption(selectId, optionId) {
+        var options = document.getElementById(selectId).options;
+        for (let i = 0; i < options.length; i++) {
+            if (options[i].value === optionId) options[i].selected = true;
+        }
+    }
+
+</script>
+
+<h1 class="text-center">ЗАПИТ РОЗКЛАДУ</h1>
+
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-6">
+            <div class="col-12 my-3">
+                <form name="search" onsubmit="return false">
+                    <label for="time">Time now</label>
+                    <input name="datenow" class="w-100" id="dateTimeNow" type="date" onchange="CheckTime()">
+
+                    <label for="time">Time</label>
+                    <input name="dateend" class="w-100" id="dateTimeEnd" type="date">
+
+                    <label for="time">Група</label>
+                    <select class="w-100" name="group" id="gr_id">
+                        <option value="">Виберіть групу або аудиторію</option>
+                    </select>
+
+                    <label for="time">Аудиторія</label>
+                    <select class="w-100" name="room" id="room">
+                        <option value="">Виберіть групу або аудиторію</option>
+                    </select>
+
+                    <div class="modal-footer my-3">
+                        <button type="submit" class="btn btn-outline-primary" id="submit">Поиск</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    document.getElementById("submit").addEventListener("click", function (e) {
+        Post_CreateTable_index(CreateData(),true);
+    });
+
+    function CreateData(){
+        let registerForm = document.forms["search"];
+        let dateNow = registerForm.elements["datenow"].value;
+        let dateEnd = registerForm.elements["dateend"].value;
+        let group = registerForm.elements["group"].value;
+        let room = registerForm.elements["room"].value;
+        // сериализуем данные в json
+        let data = JSON.stringify({
+            dateNow: dateNow,
+            dateEnd: dateEnd,
+            group: group,
+            room: room
+        });
+        return data;
+    }
+
+    function Post_CreateTable_index(data, replase){
+        document.getElementById("result").innerHTML = "";
+        // получаем данные формы
+        let request = new XMLHttpRequest();
+        // посылаем запрос на адрес "/user"
+        request.open("POST", "/dbSerchIndex", true);
+        request.setRequestHeader("Content-Type", "application/json");
+        const div = document.createElement('div');
+        setTimeout(request.addEventListener("load", function () {
+            // получаем и парсим ответ сервера
+            let receivedUser = JSON.parse(request.response);
+            if (Array.isArray(receivedUser)) {
+                CreateTable_index("result", receivedUser);
+            }
+            else {
+                document.getElementById("result").innerHTML = receivedUser;
+            }
+            if (replase) {
+                var dataParse = JSON.parse(data);
+                ReplaceSession("index_dateTimeNow", dataParse.dateNow);
+                ReplaceSession("index_dateTimeEnd", dataParse.dateEnd);
+                ReplaceSession("gr_id", dataParse.group);
+                ReplaceSession("room", dataParse.room);
+            }
+        }), 5000);
+        request.send(data);
+    }
+
+</script>
+<div id="result">
+</div>

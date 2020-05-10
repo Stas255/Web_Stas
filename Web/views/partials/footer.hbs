@@ -1,0 +1,206 @@
+</div>
+<footer class="footer">
+    <div class="mastfoot text-center" style="background-image:url(img/back2.jpg); background-position: center; background-size: cover; font-size:18px;font-weight: 600;">
+        <div class="inner">
+            <p>
+                Cover template for
+                <a class="http " href="http://e-school.in.ua/">e-cshool</a>.
+            </p>
+            <div class="mb-5 flex-center">
+                <!-- Facebook -->
+                <a href="https://www.facebook.com/ESchoolSumy/" class="fb-ic">
+                    <i class="fab fa-facebook-f fa-lg white-text mr-3 fa-2x">Facebook</i>
+                </a>
+                <!--Instagram-->
+                <a href="https://www.instagram.com/eschool_sumy/?igshid=180g8f9dx534f " class="ins-ic">
+                    <i class="fab fa-instagram fa-lg white-text mr-3 fa-2x"> Instagram </i>
+                </a>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Вход</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form onsubmit="event.preventDefault();">
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="exampleInputEmail1">Логин</label>
+                        <input type="text" name="name" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Enter email">
+                    </div>
+                    <div class="form-group">
+                        <label for="exampleInputPassword1">Пароль</label>
+                        <input type="password" name="pass" class="form-control" id="exampleInputPassword1" placeholder="Password">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary ">Очистити</button>
+                    <button type="submit" class="btn btn-primary" onclick="LoginUser()">Відправити</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+    function LoginUser() {
+        let login = document.getElementById("exampleInputEmail1").value;
+        let password = document.getElementById("exampleInputPassword1").value;
+        let data = JSON.stringify({
+            login: login,
+            password: password
+        });
+        var result;
+        let request = new XMLHttpRequest();
+        request.open("POST", "/login", true);
+        request.setRequestHeader("Content-Type", "application/json");
+        setTimeout(request.addEventListener("load", function () {
+            // получаем и парсим ответ сервера
+            let receivedUser = JSON.parse(request.response);
+            Go("/");
+        }), 5000);
+        request.send(data);
+    }
+</script>
+<!-- Modal -->
+{{#if IsAdmin}}
+<div class="modal fade" id="addchild" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Додати учня</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="AddFormChild" class="w-100">
+                    <input class="w-100 form-control" maxlength="40" id="AddFormChild_name" name="name" placeholder="Введіть ім'я дитини" type="text" required>
+                    <div class="w-100">
+                        <table class="table-add">
+                            <thead>
+                                <tr>
+                                    <th scope="col">Група</th>
+                                    <th scope="col">Id</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <td>
+                                    <select name="gr" id="AddFormChild_gr" required>
+                                        <option value="" disabled selected>Виберіть групу для учня</option>
+                                    </select>
+                                </td>
+                                <td>
+                                    <select name="ref" id="AddFormChild_t" required>
+                                        <option value="" disabled selected>Виберіть id для учня</option>
+                                    </select>
+                                </td>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="reset" class="btn btn-outline-secondary" data-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-outline-primary" onclick="addChild()">Save changes</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="dellid" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Видалення</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form class="w-100">
+                    <div class="dropdown cq-dropdown" data-name='statuses'>
+                        <select class="mdb-select colorful-select dropdown-primary md-form" id="t_m" multiple searchable="Search here..">
+                            <option value="" disabled selected>Виберіть ref_id</option>
+                        </select>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="reset" class="btn btn-outline-secondary" data-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-outline-primary" onclick="deleteRefId()">Delete changes</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    jQuery(document).ready(function ($) {
+        console.log(jQuery("#t_m"));
+        jQuery("#t_m").select();
+        AddSelectGroup("AddFormChild_gr", false);
+        AddSelectRef_ID("AddFormChild_t", false);
+        AddSelectRef_ID("t_m", false);
+    });
+    function addChild() {
+        let name = document.getElementById("AddFormChild_name").value;
+        let group = document.getElementById("AddFormChild_gr").value;
+        let id = document.getElementById("AddFormChild_t").value;
+        let data = JSON.stringify({
+            name: name,
+            group: group,
+            id: id
+        });
+        let request = new XMLHttpRequest();
+        request.open("POST", "/AddChild", true);
+        request.setRequestHeader("Content-Type", "application/json");
+        setTimeout(request.addEventListener("load", function () {
+            // получаем и парсим ответ сервера
+            let receivedUser = JSON.parse(request.response);
+        }), 5000);
+        request.send(data);
+    }
+    function GetSelectValues(selectId) {
+        var val = document.getElementById(selectId);
+        var res = [];
+        var opt = val && val.options;
+        for (var i = 0; i < opt.length;i++) {
+            option = opt[i];
+            if (option.selected) {
+                res.push(option.value || option.text);
+            }
+        }
+        return res;
+    }
+
+    function deleteRefId() {
+        var res = GetSelectValues("t_m");
+        let data = JSON.stringify({
+            id: res
+        });
+        let request = new XMLHttpRequest();
+        request.open("POST", "/DeleteRefId", true);
+        request.setRequestHeader("Content-Type", "application/json");
+        setTimeout(request.addEventListener("load", function () {
+            // получаем и парсим ответ сервера
+            let receivedUser = JSON.parse(request.response);
+        }), 5000);
+        request.send(data);
+        console.log(res);
+    }
+
+</script>
+{{/if}}
+<!-- Bootstrap core JavaScript
+    ================================================== -->
+<!-- Placed at the end of the document so the pages load faster -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/3.0.1/handlebars.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>

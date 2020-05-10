@@ -1,0 +1,280 @@
+/*
+ * Globals
+ */
+
+/* Links */
+
+a,
+a:focus,
+a:hover {
+    color: #fff;
+}
+
+button.btn-default,
+button.btn-default:focus {
+    padding: 6px 25px;
+    color: #333;
+    text-shadow: none;
+    /* Prevent inheritence from `body` */
+    background-color: #fff;
+    border: none;
+    border-radius: 10px;
+}
+
+button.btn-default.primary{
+    color: #1b4163;
+}
+
+button.btn-default.warning {
+    color: #886330;
+}
+
+button.btn-default.danger {
+    color: #923e3c;
+}
+
+
+
+button.btn-default:hover {
+    background-color: #f8f9fa;
+}
+
+button.btn-default.primary:hover {
+    color: #337ab7;
+}
+
+button.btn-default.warning:hover {
+    color: #f0ad4e;
+}
+
+button.btn-default.danger:hover {
+    color: #d9534f;
+}
+
+button.btn-add,
+button.btn-add:focus {
+     
+     color: #ffff;
+     border: none;
+     border-radius: 8px;
+     margin-bottom: 5px;
+}
+
+button.btn.btn-add:hover {
+    background-color: rgba(0,0,0,.1);
+    color: white;
+}
+
+button.btn.btn-add.white {
+    color: black;
+}
+
+/* Table */
+
+.table{
+    text-align:center;
+}
+
+table.table-add {
+    text-align: center;
+    width: 100%;
+}
+
+
+/* Image */
+.wrapper {
+    min-height: 100%;
+}
+
+/*
+ * Base structure
+ */
+
+html,
+body {
+    height: 100%;
+    background-color: #333;
+}
+
+body {
+    color: #fff;
+    text-align: center;
+    text-shadow: 0 1px 3px rgba(0, 0, 0, .5);
+    box-shadow: inset 0 0 100px rgba(0, 0, 0, .5);
+    /*padding-top: 6.2rem;*/
+
+}
+
+/* Extra markup and styles for table-esque vertical and horizontal centering */
+.site-wrapper {
+    display: table;
+    width: 100%;
+    height: 100%;
+    /* For at least Firefox */
+    min-height: 100%;
+}
+
+.site-wrapper-inner {
+    display: table-cell;
+    vertical-align: top;
+}
+
+.cover-container {
+    margin-right: auto;
+    margin-left: auto;
+}
+
+.navbar-toggler {
+    padding: .25rem .75rem;
+    font-size: 1.25rem;
+    line-height: 1;
+    background-color: transparent;
+    border: 1px solid transparent;
+    border-radius: .25rem;
+    position: absolute;
+    right: 10px;
+    top: 40px;
+}
+
+
+
+/* Padding for spacing */
+.inner {
+    padding: 30px;
+}
+
+
+/*
+ * Header
+ */
+.masthead-brand {
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+.masthead-nav > li {
+    display: inline-block;
+}
+
+.masthead-nav > li + li {
+    margin-left: 20px;
+}
+
+.masthead-nav > li > a {
+    padding-right: 0;
+    padding-left: 0;
+    font-size: 16px;
+    font-weight: bold;
+    color: #fff;
+    /* IE8 proofing */
+    color: rgba(255, 255, 255, .75);
+    border-bottom: 2px solid transparent;
+}
+
+.masthead-nav > li > a:hover,
+.masthead-nav > li > a:focus {
+    background-color: transparent;
+    border-bottom-color: rgba(255, 255, 255, .25);
+}
+
+.masthead-nav > .active > a,
+.masthead-nav > .active > a:hover,
+.masthead-nav > .active > a:focus {
+    color: #fff;
+    border-bottom-color: #fff;
+}
+
+@media (min-width: 768px) {
+    .masthead-brand {
+        float: left;
+    }
+
+    .masthead-nav {
+        float: right;
+    }
+}
+
+
+/*
+ * Cover
+ */
+
+.cover {
+    padding: 0 20px;
+}
+
+.cover .btn-lg {
+    padding: 10px 20px;
+    font-weight: bold;
+}
+
+.navbar-masthead .navbar-nav .btn-lg {
+    border-radius: 50px;
+    padding: avto;
+    color: rgb(250, 250, 250);
+}
+
+
+
+/*
+ * Footer
+ */
+
+.mastfoot {
+    color: #999;
+    /* IE8 proofing */
+    color: rgba(255, 255, 255, .5);
+}
+
+.mastfoot .fab {
+    color: #999;
+    /* IE8 proofing */
+    color: rgba(255, 255, 255, .5);
+}
+
+.mastfoot .http {
+    color: #999;
+    /* IE8 proofing */
+    color: rgba(255, 255, 255, .5);
+}
+
+div#result {
+    text-align: center;
+}
+
+img#wait {
+    height: 70px;
+    display: none;
+}
+
+
+/*
+ * Affix and center
+ */
+
+@media (min-width: 768px) {
+
+    /* Pull out the header and footer */
+    .masthead {
+        position: fixed;
+        top: 0;
+    }
+
+    /* Start the vertical centering */
+    .site-wrapper-inner {
+        vertical-align: middle;
+    }
+
+    /* Handle the widths */
+    .masthead,
+    .mastfoot,
+    .cover-container {
+        width: 100%;
+        /* Must be percentage or pixels for horizontal alignment */
+    }
+}
+
+.w-100 {
+    margin-top: 5px;
+    text-align: center;
+}
