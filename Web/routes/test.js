@@ -1,14 +1,11 @@
-var isAdmin;
-
-exports.admin = function(admin) {
-        isAdmin = admin;
-};
+const admin = require('./admin.js');
 
 //Створює головне меню
 exports.index_create_get = function (request, response) {
+
     response.render("main.hbs",
         {
-            IsAdmin: isAdmin
+            IsAdmin: admin.isAdmin(request)
         });
 };
 
@@ -17,6 +14,16 @@ exports.infor_create_get = function (request, response) {
     var id = request.query.id;
     response.render("infor_Table.hbs",
         {
-            IsAdmin: isAdmin
+            IsAdmin: admin.isAdmin(request)
+        });
+};
+
+//Створює список уроків по id
+exports.lesson = function (request, response) {
+    var grid = request.query.grid;
+    response.render("lesson.hbs",
+        {
+            IsAdmin: admin.isAdmin(request),
+            grid: grid
         });
 };

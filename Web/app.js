@@ -8,6 +8,7 @@ const bodyParser = require('body-parser');
 //проверка
 const admin= require('./routes/admin.js');
 const test = require('./routes/test.js');
+const adminController = require('./routes/adminController.js');
 
 // создаем парсер для данных в формате json
 const jsonParser = express.json();
@@ -22,13 +23,34 @@ const connectionInfo = {
     password: "&;5UPSz(zSL1"
 };
 
+const expressHbs = require("express-handlebars");
+const hbs = require("hbs");
+app.use(express.static(path.join(__dirname, '/public')));
+// устанавливаем настройки для файлов layout
+app.engine("hbs", expressHbs(
+    {
+        layoutsDir: __dirname + "/views/layouts",
+        defaultLayout: "layout",
+        extname: "hbs"
+    }
+));
+
+
+
 app.use(express.json());       // to support JSON-encoded bodies
 app.use(express.urlencoded()); // to support URL-encoded bodies
+
+app.set("view engine", "hbs");
+hbs.registerPartials(__dirname + "/views/partials");
 
 app.use(session({
     secret: 'ssshhhhh',
     saveUninitialized: true
 }));
+
+
+
+
 
 app.get(function (request, response, next) {
     if (!request.session.params) {
@@ -38,7 +60,6 @@ app.get(function (request, response, next) {
         localStorage[request.session.id] = JSON.stringify(ses);
     }
     var i = JSON.parse(localStorage[request.sessionID]).admin;
-    test.admin(i);
     request.session.params = JSON.parse(localStorage[request.sessionID]);
     next();
 });
@@ -105,7 +126,6 @@ app.post("/login",
     function (request, response) {
         var data = request.body;
         var res = admin.login(data.login, data.password, request);
-        test.admin(res);
         response.redirect(request.get('referer'));
     });
 
@@ -113,8 +133,7 @@ app.post("/logout",
     jsonParser,
     function (request, response, next) {
         var res = admin.logout(request);
-        test.admin(!res);
-        response.redirect("/index");
+        response.redirect(request.get('referer'));
     });
 
 app.post("/AddChild",
@@ -161,90 +180,23 @@ app.post("/addgr",
         );
     });
 
-app.post("/dellgr",
-    jsonParser,
-    function (request, response) {
-        var data = request.body;
-        var sel = "CALL DellGr("+data.grid+")";
-        Database.execute(connectionInfo,
-            database => database.query(sel)
-                .then(rows => {
-                    response.redirect("/infor");
-                })
-        );
-    });
+//DELETE group
+app.post("/dellgroup", adminController.dellgroup_create_post);
 
-app.post("/DeleteRefId",
-    jsonParser,
-    function (request, response) {
-        var data = request.body;
-        var ids = data.id[0];
-        for (var i = 1; i < data.id.length; i++) {
-            ids += ",'" + data.id[i] + "'";
-        }
-        var sel = "DELETE FROM temp WHERE t IN (" + ids + ");";
-        Database.execute(connectionInfo,
-            database => database.query(sel)
-                .then(rows => {
-                    response.redirect(request.get('referer'));
-                })
-        );
-    });
+// DELETE dellRefId
+app.delete("/delleteRefId", /*jsonParser,*/ adminController.delleteRefId_create_delete);
 
-const expressHbs = require("express-handlebars");
-const hbs = require("hbs");
-app.use(express.static(path.join(__dirname, '/public')));
-// устанавливаем настройки для файлов layout
-app.engine("hbs", expressHbs(
-    {
-        layoutsDir: __dirname + "/views/layouts",
-        defaultLayout: "layout",
-        extname: "hbs"
-    }
-))
-app.set("view engine", "hbs");
-hbs.registerPartials(__dirname + "/views/partials");
+//GET lesson
+app.get("/lesson", test.lesson);
 
-app.get("/lesson", function (request, response) {
-    var grid = request.query.grid;
-    var id = request.query.id;
-    response.render("lesson.hbs",
-        {
-            IsAdmin: IsAdmin(request),
-            grid:grid
-        });
-});
+// POST updategroup
+app.post("/updategroup", adminController.updategroup_create_post);
 
-app.post("/editgrproc", function (request, response) {
-    var grid = request.body;
-    var sel = "UPDATE gr SET name= '" + grid.name + "', description = '" + grid.des+"' WHERE gr_id = "+grid.id+";";
-    Database.execute(connectionInfo,
-        database => database.query(sel)
-            .then(rows => {
-                response.redirect("/infor");
-            })
-    );
-});
+// POST editgr
+app.post("/editgr", adminController.editgroup_create_post);
 
-app.post("/editgr", function (request, response) {
-    var grid = request.body;
-    var sel = "SELECT * from gr WHERE gr_id = " + grid.grid + ";";
-    Database.execute(connectionInfo,
-        database => database.query(sel)
-            .then(rows => {
-                response.json(rows);
-            })
-    );
-});
-
-app.get("/editgr", function (request, response) {
-    var grid = request.query.grid;
-    response.render("editgr.hbs",
-        {
-            IsAdmin: IsAdmin(request),
-            grid: grid
-        });
-});
+// GET editgr
+app.get("/editgr", adminController.editgroup_create_get);
 
 // Get groups
 app.get("/groups", test.infor_create_get);

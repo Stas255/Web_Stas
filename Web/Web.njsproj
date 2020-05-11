@@ -37,6 +37,9 @@
     <Content Include="routes\admin.js">
       <SubType>Code</SubType>
     </Content>
+    <Content Include="routes\adminController.js">
+      <SubType>Code</SubType>
+    </Content>
     <Content Include="routes\test.js">
       <SubType>Code</SubType>
     </Content>

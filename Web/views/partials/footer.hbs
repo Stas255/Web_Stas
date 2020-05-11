@@ -165,7 +165,7 @@
             id: res
         });
         let request = new XMLHttpRequest();
-        request.open("POST", "/DeleteRefId", true);
+        request.open("DELETE", "/delleteRefId", true);
         request.setRequestHeader("Content-Type", "application/json");
         setTimeout(request.addEventListener("load", function () {
             // получаем и парсим ответ сервера
