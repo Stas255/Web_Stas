@@ -38,7 +38,10 @@ app.use(function (request, response, next) {
     next();
 });
 
-
+app.use((req, res, next) => {
+    res.set('Cache-Control', 'no-store')
+    next()
+})
 
 
 
