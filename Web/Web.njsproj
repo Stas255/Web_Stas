@@ -34,6 +34,12 @@
     <Content Include="db.js">
       <SubType>Code</SubType>
     </Content>
+    <Content Include="routes\admin.js">
+      <SubType>Code</SubType>
+    </Content>
+    <Content Include="routes\test.js">
+      <SubType>Code</SubType>
+    </Content>
     <Content Include="views\editgr.hbs">
       <SubType>Code</SubType>
     </Content>
@@ -70,8 +76,6 @@
     <Content Include="public\webfonts\fa-solid-900.ttf" />
     <Content Include="public\webfonts\fa-solid-900.woff" />
     <Content Include="public\webfonts\fa-solid-900.woff2" />
-    <Content Include="routes\index.js" />
-    <Content Include="routes\users.js" />
     <Content Include="package.json" />
     <Content Include="public\stylesheets\main.css" />
     <Content Include="README.md" />

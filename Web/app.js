@@ -5,13 +5,16 @@ const path = require('path');
 const mysql = require('mysql2');
 const bodyParser = require('body-parser');
 
+//проверка
+const admin= require('./routes/admin.js');
+const test = require('./routes/test.js');
 
 // создаем парсер для данных в формате json
 const jsonParser = express.json();
 const LocalStorage = require('node-localstorage').LocalStorage;
 localStorage = new LocalStorage('./scratch');
 const Database = require('./db');
-var admin = ["admin", "1"];
+
 const connectionInfo = {
     host: "91.239.235.7",
     user: "ersesrqr_test",
@@ -27,13 +30,15 @@ app.use(session({
     saveUninitialized: true
 }));
 
-app.use(function (request, response, next) {
+app.get(function (request, response, next) {
     if (!request.session.params) {
         var ses = {
             admin: false
-        }
+        }       
         localStorage[request.session.id] = JSON.stringify(ses);
     }
+    var i = JSON.parse(localStorage[request.sessionID]).admin;
+    test.admin(i);
     request.session.params = JSON.parse(localStorage[request.sessionID]);
     next();
 });
@@ -99,15 +104,17 @@ app.post("/login",
     jsonParser,
     function (request, response) {
         var data = request.body;
-        var res = Login(data.login, data.password, request);
-        response.json(res);
+        var res = admin.login(data.login, data.password, request);
+        test.admin(res);
+        response.redirect(request.get('referer'));
     });
 
 app.post("/logout",
     jsonParser,
     function (request, response, next) {
-        var res = Logout(request);
-        response.redirect("/");
+        var res = admin.logout(request);
+        test.admin(!res);
+        response.redirect("/index");
     });
 
 app.post("/AddChild",
@@ -232,7 +239,6 @@ app.post("/editgr", function (request, response) {
 
 app.get("/editgr", function (request, response) {
     var grid = request.query.grid;
-    var id = request.query.id;
     response.render("editgr.hbs",
         {
             IsAdmin: IsAdmin(request),
@@ -240,20 +246,13 @@ app.get("/editgr", function (request, response) {
         });
 });
 
-app.get("/infor", function (request, response) {
-    var id = request.query.id;
-    response.render("infor_Table.hbs",
-        {
-            IsAdmin: IsAdmin(request)
-        });
-});
+// Get groups
+app.get("/groups", test.infor_create_get);
 
-app.use("/index", function (request, response) {
-    response.render("main.hbs",
-        {
-            IsAdmin: IsAdmin(request)
-        });
-});
+// GET index
+app.get("/index", test.index_create_get);
+//app.post("/index", test.index_create_get);
+
 
 app.get("/", function (request, response) {
     response.redirect("/index")
