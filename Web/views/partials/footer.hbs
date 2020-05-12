@@ -61,7 +61,7 @@
                 </button>
             </div>
             <div class="modal-body">
-                <form id="AddFormChild" class="w-100">
+                <form id="AddFormChild" class="w-100" method="post" action="/addChild">
                     <input class="w-100 form-control" maxlength="40" id="AddFormChild_name" name="name" placeholder="Введіть ім'я дитини" type="text" required>
                     <div class="w-100">
                         <table class="table-add">
@@ -87,7 +87,7 @@
                     </div>
                     <div class="modal-footer">
                         <button type="reset" class="btn btn-outline-secondary" data-dismiss="modal">Close</button>
-                        <button type="submit" class="btn btn-outline-primary" onclick="addChild()">Save changes</button>
+                        <button type="submit" class="btn btn-outline-primary">Save changes</button>
                     </div>
                 </form>
             </div>
@@ -128,24 +128,7 @@
         AddSelectRef_ID("AddFormChild_t", false);
         AddSelectRef_ID("t_m", false);
     });
-    function addChild() {
-        let name = document.getElementById("AddFormChild_name").value;
-        let group = document.getElementById("AddFormChild_gr").value;
-        let id = document.getElementById("AddFormChild_t").value;
-        let data = JSON.stringify({
-            name: name,
-            group: group,
-            id: id
-        });
-        let request = new XMLHttpRequest();
-        request.open("POST", "/AddChild", true);
-        request.setRequestHeader("Content-Type", "application/json");
-        setTimeout(request.addEventListener("load", function () {
-            // получаем и парсим ответ сервера
-            let receivedUser = JSON.parse(request.response);
-        }), 5000);
-        request.send(data);
-    }
+
     function GetSelectValues(selectId) {
         var val = document.getElementById(selectId);
         var res = [];

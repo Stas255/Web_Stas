@@ -35,7 +35,8 @@
                                     let data = JSON.stringify({
                                         find: "lesson",
                                         where: "WHERE gr_id = " + grid,
-                                        dictinct:"less_id,gr_id,room,DATE_FORMAT(dt , ' %d-%c-%Y %T') as dt"
+                                        dictinct: "less_id,gr_id,room,DATE_FORMAT(dt , ' %d-%c-%Y %T') as dt",
+                                        order_by: " ORDER BY lesson.dt ASC"
                                     });
                                     let request = new XMLHttpRequest();
                                     request.open("POST", "/dbSerch", true);

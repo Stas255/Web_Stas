@@ -37,10 +37,10 @@
     <Content Include="routes\admin.js">
       <SubType>Code</SubType>
     </Content>
-    <Content Include="routes\adminController.js">
+    <Content Include="routes\adminRouter.js">
       <SubType>Code</SubType>
     </Content>
-    <Content Include="routes\test.js">
+    <Content Include="routes\main.js">
       <SubType>Code</SubType>
     </Content>
     <Content Include="views\editgr.hbs">
