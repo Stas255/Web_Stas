@@ -83,6 +83,29 @@ function AddSelectRef_ID(idSelect) {
     request.send(data);
 }
 
+function AddSelectChilds(idSelect) {
+    let data = JSON.stringify({
+        find: "child"
+    });
+    let request = new XMLHttpRequest();
+    request.open("POST", "/dbSerch", true);
+    request.setRequestHeader("Content-Type", "application/json");
+    var result;
+    setTimeout(request.addEventListener("load", function () {
+        // получаем и парсим ответ сервера
+        let receivedUser = JSON.parse(request.response);
+        result = receivedUser;
+        var x = document.getElementById(idSelect);
+        result.forEach(element => {
+            option = document.createElement("option");
+            option.text = element.full_name;
+            option.value = element.child_id;
+            x.add(option);
+        });
+    }), 5000);
+    request.send(data);
+}
+
 
 function CheckCreateSession(sessionId, sessionAdd) {
     if (localStorage.getItem(sessionId) == null) {

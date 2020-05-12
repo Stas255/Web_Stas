@@ -1,0 +1,97 @@
+<h1 class="text-center">Користувач {{parent_name}}</h1>
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-6">
+            <div class="col-12 my-3">
+                <form id="form_child">
+                    <select class="w-100" name="child" id="child" onchange="CreateInforChild()">
+                        <option value="">Виберіть дитину</option>
+                    </select>
+                </form>
+                <table class="table" id="Lesson_table">
+                    <thead>
+                        <tr>
+                            <th scope="col">Група</th>
+                            <th scope="col">Дата</th>
+                            <th scope="col">Відвідування</th>
+                        </tr>
+                    </thead>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script id="entry-template" type="text/x-handlebars-template">
+</script>
+<script>
+    window.onload = function () {
+    var parentid = {{parentId}};
+    document.getElementById("Lesson_table").style.display = "none";
+    let data = JSON.stringify({
+        find: "child",
+        where: "WHERE child_id IN(SELECT id_child FROM communication WHERE id_parent = " + parentid+")",
+    });
+        let request = new XMLHttpRequest();
+    request.open("POST", "/dbSerch", true);
+        request.setRequestHeader("Content-Type", "application/json");
+        var result;
+        setTimeout(request.addEventListener("load", function () {
+            // получаем и парсим ответ сервера
+            let receivedUser = JSON.parse(request.response);
+            result = receivedUser;
+            var x = document.getElementById("child");
+            var option = document.createElement("option");
+            result.forEach(element => {
+                option = document.createElement("option");
+                option.text = element.full_name;
+                option.value = element.ref_id;
+                x.add(option);
+            });
+        }), 5000);
+    request.send(data);
+    };
+
+    function CreateInforChild() {  
+        document.getElementById("Lesson_table").style.display = "none";
+        let registerForm = document.forms["form_child"];
+        let x = registerForm.elements["child"].value;
+        let data = JSON.stringify({
+            refid: x
+        });
+        let request = new XMLHttpRequest();
+        request.open("POST", "/SerchVisit", true);
+        request.setRequestHeader("Content-Type", "application/json");
+        var results;
+        setTimeout(request.addEventListener("load", function () {
+            // получаем и парсим ответ сервера
+            let receivedUser = JSON.parse(request.response);
+            results = receivedUser;
+            CreateTable_parent("Lesson_table", results);
+            document.getElementById("Lesson_table").style.display = "table";
+        }), 5000);
+        request.send(data);
+    }
+    function CreateTable_parent(idDivTable, results) {
+        var table = document.getElementById(idDivTable);
+        var tbodyold = table.getElementsByTagName('tbody');
+        for (var i = 0; i < tbodyold.length; i++) {
+            tbodyold[i].innerHTML = "";
+        }
+        var tbody = document.createElement("tbody");
+        results.forEach(function (item) { AddArrayInTbody_infor(tbody, item) });
+        table.appendChild(tbody);
+    }
+
+    function AddArrayInTbody_infor(tbody, array) {
+        var tr = document.createElement("tr");
+        AddTHTextInTr(tr, array.name);
+        AddTDTextInTr(tr, array.dt);
+        var check = "Не був";
+        if (array.b == 1) {
+            check = "Був";
+        }
+        AddTDTextInTr(tr, check);
+        tbody.appendChild(tr);
+    }
+</script>

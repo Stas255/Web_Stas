@@ -24,6 +24,7 @@ exports.editgroup_create_get = function (request, response) {
         response.render("editgr.hbs",
             {
                 IsAdmin: true,
+                IsParent: admin.isParent(request),
                 grid: grid
             });
     }
@@ -165,6 +166,7 @@ exports.editchild_create_get = function (request, response) {
         response.render("editchild.hbs",
             {
                 IsAdmin: true,
+                IsParent: admin.isParent(request),
                 grid: data.gr_id,
                 childid: data.child_id,
                 namegr: data.namegr
@@ -248,9 +250,10 @@ exports.dellvisit_create_post = function (request, response) {
 exports.editlesson_create_get = function (request, response) {
     if (admin.isAdmin(request)) {
         var data = request.query;
-        response.render("editlesson.hbs",
+        response.render("parent.hbs",
             {
                 IsAdmin: true,
+                IsParent: admin.isParent(request),
                 lessid: data.lessid,
                 date: data.dt,
                 grname: data.grname
@@ -284,6 +287,23 @@ exports.deletelesson_create_post = function (request, response) {
     if (admin.isAdmin(request)) {
         var data = request.body;
         var sel = "DELETE FROM lesson WHERE less_id = " + data.lessid+";";
+        Database.execute(connectionInfo,
+            database => database.query(sel)
+                .then(rows => {
+                    response.redirect(request.get('referer'));
+                })
+        );
+    }
+    else {
+        response.redirect("/index");
+    }
+};
+
+//Створює Родителя
+exports.createparent_create_post = function (request, response) {
+    if (admin.isAdmin(request)) {
+        var data = request.body;
+        var sel = "CALL CreateParent('" + data.name + "','" + data.login + "','" + data.password + "','" + data.childs +"');";
         Database.execute(connectionInfo,
             database => database.query(sel)
                 .then(rows => {

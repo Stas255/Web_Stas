@@ -21,7 +21,8 @@ exports.index_create_get = function (request, response) {
 
     response.render("main.hbs",
         {
-            IsAdmin: admin.isAdmin(request)
+            IsAdmin: admin.isAdmin(request),
+            IsParent: admin.isParent(request)
         });
 };
 
@@ -30,7 +31,8 @@ exports.infor_create_get = function (request, response) {
     var id = request.query.id;
     response.render("infor_Table.hbs",
         {
-            IsAdmin: admin.isAdmin(request)
+            IsAdmin: admin.isAdmin(request),
+            IsParent: admin.isParent(request)
         });
 };
 
@@ -40,6 +42,7 @@ exports.lesson_create_get = function (request, response) {
     response.render("lesson.hbs",
         {
             IsAdmin: admin.isAdmin(request),
+            IsParent: admin.isParent(request),
             grid: grid.grid,
             grname: grid.grname
         });
@@ -51,6 +54,7 @@ exports.pupils_create_get = function (request, response) {
     response.render("pupils.hbs",
         {
             IsAdmin: admin.isAdmin(request),
+            IsParent: admin.isParent(request),
             grid: grid
         });
 };
@@ -61,6 +65,7 @@ exports.visit_create_get = function (request, response) {
     response.render("visit.hbs",
         {
             IsAdmin: admin.isAdmin(request),
+            IsParent: admin.isParent(request),
             grid: data.grid,
             data: data.dt,
             lessid: data.lessid,
@@ -70,15 +75,13 @@ exports.visit_create_get = function (request, response) {
 
 //Виходить
 exports.logout_create_post = function (request, response, next) {
-    var res = admin.logout(request);
+    admin.logout(request);
     response.redirect(request.get('referer'));
 };
 
 //Регистрірує
 exports.login_create_post = function (request, response) {
-    var data = request.body;
-    var res = admin.login(data.login, data.password, request);
-    response.redirect(request.get('referer'));
+    admin.login(response, request);
 };
 
 //Шукає в базі даних

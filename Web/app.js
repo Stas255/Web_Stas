@@ -6,7 +6,7 @@ const path = require('path');
 //проверка
 const main = require('./routes/main.js');
 const adminRouter = require('./routes/adminRouter.js');
-
+const parent = require('./routes/parent.js');
 
 const LocalStorage = require('node-localstorage').LocalStorage;
 localStorage = new LocalStorage('./scratch');
@@ -37,7 +37,9 @@ app.use(session({
 app.use(function (request, response, next) {
     if (!request.session.params) {
         var ses = {
-            admin: false
+            admin: false,
+            parent: false,
+            id_parent:0
         }       
         localStorage[request.session.id] = JSON.stringify(ses);
     }
@@ -128,6 +130,21 @@ app.post("/editlesson", adminRouter.editlesson_create_post);
 
 //POST deletelesson
 app.post("/deletelesson", adminRouter.deletelesson_create_post);
+
+//POST getPerent
+app.post("/createparent", adminRouter.createparent_create_post);
+
+/// PERENT ROUTES ///
+
+//POST getPerent
+app.post("/getPerent", parent.DbPerent_create_post);
+
+//GET parent
+app.get("/parent", parent.parent_create_get);
+
+//POST getPerent
+app.post("/SerchVisit", parent.SerchVisit_create_post);
+
 
 app.get("/", function (request, response) {
     response.redirect("/index")

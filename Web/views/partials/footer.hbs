@@ -72,16 +72,16 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <td>
-                                    <select name="gr" id="AddFormChild_gr" required>
-                                        <option value="" disabled selected>Виберіть групу для учня</option>
-                                    </select>
-                                </td>
-                                <td>
-                                    <select name="ref" id="AddFormChild_t" required>
-                                        <option value="" disabled selected>Виберіть id для учня</option>
-                                    </select>
-                                </td>
+                            <td>
+                                <select name="gr" id="AddFormChild_gr" required>
+                                    <option value="" disabled selected>Виберіть групу для учня</option>
+                                </select>
+                            </td>
+                            <td>
+                                <select name="ref" id="AddFormChild_t" required>
+                                    <option value="" disabled selected>Виберіть id для учня</option>
+                                </select>
+                            </td>
                             </tbody>
                         </table>
                     </div>
@@ -120,6 +120,50 @@
         </div>
     </div>
 </div>
+
+<div class="modal fade" id="addParent" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Введіть поля</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="Addparent" class="w-100" method="post" action="/createparent">
+                    <input class="w-100 form-control" maxlength="40" id="Addparent_name" name="name" placeholder="Введіть ім'я" type="text" required>
+                    <div class="w-100">
+                        <table class="table-add">
+                            <thead>
+                                <tr>
+                                    <th scope="col">Login</th>
+                                    <th scope="col">Password</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            <td>
+                                <input class="w-100 form-control" maxlength="40" id="Addparent_login" name="login" placeholder="Введіть login" type="text" required>
+                            </td>
+                            <td>
+                                <input class="w-100 form-control" maxlength="40" id="Addparent_password" name="password" placeholder="Введіть password" type="text" required>
+                            </td>
+                            </tbody>
+                        </table>
+                        <select class="mdb-select colorful-select dropdown-primary md-form" name="childs" id="childs" searchable="Search here..">
+                            <option value="" disabled selected>Виберіть дитину</option>
+                        </select>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="reset" class="btn btn-outline-secondary" data-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-outline-primary" onclick="CreateParent()">Create</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
 <script>
     jQuery(document).ready(function ($) {
         console.log(jQuery("#t_m"));
@@ -127,13 +171,14 @@
         AddSelectGroup("AddFormChild_gr", false);
         AddSelectRef_ID("AddFormChild_t", false);
         AddSelectRef_ID("t_m", false);
+        AddSelectChilds("childs");
     });
 
     function GetSelectValues(selectId) {
         var val = document.getElementById(selectId);
         var res = [];
         var opt = val && val.options;
-        for (var i = 0; i < opt.length;i++) {
+        for (var i = 0; i < opt.length; i++) {
             option = opt[i];
             if (option.selected) {
                 res.push(option.value || option.text);
@@ -157,7 +202,6 @@
         request.send(data);
         console.log(res);
     }
-
 </script>
 {{/if}}
 <!-- Bootstrap core JavaScript

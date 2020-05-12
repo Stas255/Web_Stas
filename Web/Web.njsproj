@@ -43,6 +43,9 @@
     <Content Include="routes\main.js">
       <SubType>Code</SubType>
     </Content>
+    <Content Include="routes\parent.js">
+      <SubType>Code</SubType>
+    </Content>
     <Content Include="views\editchild.hbs">
       <SubType>Code</SubType>
     </Content>
@@ -89,6 +92,9 @@
     <Content Include="public\stylesheets\main.css" />
     <Content Include="README.md" />
     <Content Include="views\infor_Table.hbs">
+      <SubType>Code</SubType>
+    </Content>
+    <Content Include="views\parent.hbs">
       <SubType>Code</SubType>
     </Content>
     <Content Include="views\partials\header.hbs">
