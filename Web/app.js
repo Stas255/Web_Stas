@@ -5,12 +5,11 @@ const path = require('path');
 
 //проверка
 const main = require('./routes/main.js');
-const adminController = require('./routes/adminRouter.js');
+const adminRouter = require('./routes/adminRouter.js');
 
 
 const LocalStorage = require('node-localstorage').LocalStorage;
 localStorage = new LocalStorage('./scratch');
-const Database = require('./db');
 
 const expressHbs = require("express-handlebars");
 const hbs = require("hbs");
@@ -23,8 +22,6 @@ app.engine("hbs", expressHbs(
         extname: "hbs"
     }
 ));
-
-
 
 app.use(express.json());       // to support JSON-encoded bodies
 app.use(express.urlencoded()); // to support URL-encoded bodies
@@ -68,7 +65,7 @@ app.post("/login", main.login_create_post);
 app.post("/logout", main.logout_create_post);
 
 // Get groups
-app.get("/groups", main.infor_create_get);
+app.use("/groups", main.infor_create_get);
 
 // GET index
 app.get("/index", main.index_create_get);
@@ -76,45 +73,64 @@ app.get("/index", main.index_create_get);
 //GET lesson
 app.get("/lesson", main.lesson_create_get);
 
+//GET lesson
+app.get("/pupils", main.pupils_create_get);
+
+//GET visit
+app.get("/visit", main.visit_create_get)
+
 /// ADMIN ROUTES ///
 
 //POST addchild
-app.post("/addchild", adminController.addchild_create_post);
+app.post("/addchild", adminRouter.addchild_create_post);
 
 //POST addlesson
-app.post("/addlesson", adminController.addlesson_create_post);
+app.post("/addlesson", adminRouter.addlesson_create_post);
 
 //POST addgroup
-app.post("/addgroup", adminController.addgroup_create_post);
+app.post("/addgroup", adminRouter.addgroup_create_post);
 
 //DELETE group
-app.post("/dellgroup", adminController.dellgroup_create_post);
+app.post("/dellgroup", adminRouter.dellgroup_create_post);
 
-// DELETE dellRefId
-app.delete("/delleteRefId", adminController.delleteRefId_create_delete);
+//DELETE dellRefId
+app.delete("/delleteRefId", adminRouter.delleteRefId_create_delete);
 
-// POST updategroup
-app.post("/updategroup", adminController.updategroup_create_post);
+//POST updategroup
+app.post("/updategroup", adminRouter.updategroup_create_post);
 
-// POST editgr
-app.post("/editgr", adminController.editgroup_create_post);
+//POST editgr
+app.post("/editgr", adminRouter.editgroup_create_post);
 
-// GET editgr
-app.get("/editgr", adminController.editgroup_create_get);
+//GET editgr
+app.get("/editgr", adminRouter.editgroup_create_get);
 
+//GET editchild
+app.get("/editchild", adminRouter.editchild_create_get);
 
+//POST updatchild
+app.post("/updatchild", adminRouter.updatchild_create_post);
 
+//DELETE child
+app.post("/dellchild", adminRouter.dellchild_create_post);
+
+//POST addvisit
+app.post("/addvisit", adminRouter.addvisit_create_post);
+
+//POST dellvisit
+app.post("/dellvisit", adminRouter.dellvisit_create_post);
+
+//GET updatlesson
+app.get("/editlesson", adminRouter.editlesson_create_get);
+
+//POST updatlesson
+app.post("/editlesson", adminRouter.editlesson_create_post);
+
+//POST deletelesson
+app.post("/deletelesson", adminRouter.deletelesson_create_post);
 
 app.get("/", function (request, response) {
     response.redirect("/index")
 });
 app.listen(1337);
 
-
-Database.execute = function (config, callback) {
-    const database = new Database(config);
-    return callback(database).then(
-        result => database.close().then(() => result),
-        err => database.close().then(() => { throw err; })
-    );
-};

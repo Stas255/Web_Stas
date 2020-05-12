@@ -36,11 +36,35 @@ exports.infor_create_get = function (request, response) {
 
 //Створює список уроків по id
 exports.lesson_create_get = function (request, response) {
-    var grid = request.query.grid;
+    var grid = request.query;
     response.render("lesson.hbs",
         {
             IsAdmin: admin.isAdmin(request),
+            grid: grid.grid,
+            grname: grid.grname
+        });
+};
+
+//Створює список учнів
+exports.pupils_create_get = function (request, response) {
+    var grid = request.query.grid;
+    response.render("pupils.hbs",
+        {
+            IsAdmin: admin.isAdmin(request),
             grid: grid
+        });
+};
+
+//Створює відвідування
+exports.visit_create_get = function (request, response) {
+    var data = request.query;
+    response.render("visit.hbs",
+        {
+            IsAdmin: admin.isAdmin(request),
+            grid: data.grid,
+            data: data.dt,
+            lessid: data.lessid,
+            grname: data.grname
         });
 };
 

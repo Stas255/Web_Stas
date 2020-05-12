@@ -29,9 +29,10 @@
                     </table>
                             <script id="entry-template" type="text/x-handlebars-template"></script>
                             <script>
+                                var grname;
                                 window.onload = function () {
-
-                                    var grid = {{ grid }};
+                                    grname = new String('{{grname}}');
+                                    var grid = {{grid}};
                                     let data = JSON.stringify({
                                         find: "lesson",
                                         where: "WHERE gr_id = " + grid,
@@ -62,10 +63,10 @@
                                     var tr = document.createElement("tr");
                                     AddTHTextInTr(tr, array.room);
                                     AddTDTextInTr(tr, array.dt);
-                                    CreateButton_inforInForm(tr, "primary", [array.gr_id, array.less_id], "Go_people", "eye", ["grid", "lessid"], "get");
+                                    CreateButton_inforInForm(tr, "primary", [array.gr_id, array.less_id, array.dt, grname], "/visit", "eye", ["grid", "lessid", "dt", "grname"], "get");
                                     {{#if IsAdmin}}
-                                    CreateButton_inforInForm(tr, "warning", array.less_id, "Go_editlesson", "pen", "lessid", "get");
-                                    CreateButton_inforInForm(tr, "danger", array.less_id, "Go_delllesson", "trash-alt", "lessid", "post");
+                                    CreateButton_inforInForm(tr, "warning", [array.less_id, grname, array.dt], "/editlesson", "pen", ["lessid", "grname", "dt"], "get");
+                                    CreateButton_inforInForm(tr, "danger", array.less_id, "/deletelesson", "trash-alt", "lessid", "post");
                                     {{/if}}
                                     tbody.appendChild(tr);
                                 }

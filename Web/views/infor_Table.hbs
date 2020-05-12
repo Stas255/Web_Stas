@@ -55,7 +55,7 @@
         var tr = document.createElement("tr");
         AddTHTextInTr(tr, array.name);
         AddTDTextInTr(tr, array.description);
-        CreateButton_inforInForm(tr, "primary", array.gr_id, "/lesson", "eye","grid","get");
+        CreateButton_inforInForm(tr, "primary", [array.gr_id, array.name], "/lesson", "eye",["grid","grname"],"get");
         CreateButton_inforInForm(tr, "primary", array.gr_id, "/pupils", "eye", "grid", "get");
         {{#if IsAdmin}}
         CreateButton_inforInForm(tr, "warning", array.gr_id, "/editgr", "pen", "grid", "get");

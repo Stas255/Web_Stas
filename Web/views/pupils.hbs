@@ -1,0 +1,60 @@
+<div class="container">
+    <div class="col-12 my-3">
+        <h1 class="text-center">
+            Список студентів групи
+        </h1>
+        <table class="table" id="Pupils_table">
+            <thead>
+                <tr>
+                    <th scope="col">Ім'я</th>
+                    {{#if IsAdmin}}
+                    <th scope="col">Редагувати</th>
+                    <th scope="col">Видалити учня</th>
+                    {{/if}}
+                </tr>
+            </thead>
+        </table>
+    </div>
+</div>
+
+<script id="entry-template" type="text/x-handlebars-template"></script>
+<script>
+    window.onload = function () {
+        var grid = {{grid}};
+        let data = JSON.stringify({
+            dictinct: "(SELECT name FROM gr WHERE gr_id = " +grid+") as name, child.*",
+            find: "child",
+            where: "WHERE gr_id = " + grid
+        });
+        let request = new XMLHttpRequest();
+        request.open("POST", "/dbSerch", true);
+        request.setRequestHeader("Content-Type", "application/json");
+        var result;
+        setTimeout(request.addEventListener("load", function () {
+            // получаем и парсим ответ сервера
+            let receivedUser = JSON.parse(request.response);
+            result = receivedUser;
+            CreateTable_pupils("Pupils_table", result);
+
+        }), 5000);
+        request.send(data);
+    };
+
+    function CreateTable_pupils(idDivTable, results) {
+        var table = document.getElementById(idDivTable);
+        var tbody = document.createElement("tbody");
+        results.forEach(function (item) { AddArrayInTbody_infor(tbody, item) });
+        table.appendChild(tbody);
+    };
+
+    function AddArrayInTbody_infor(tbody, array) {
+        var tr = document.createElement("tr");
+        AddTHTextInTr(tr, array.full_name);
+        {{#if IsAdmin}}
+        CreateButton_inforInForm(tr, "warning", [array.child_id, array.name, array.gr_id], "/editchild", "pen", ["child_id","namegr","gr_id"], "get");
+        CreateButton_inforInForm(tr, "danger", array.child_id, "/delldellchild", "trash-alt", "child_id", "post");
+        {{/if}}
+                tbody.appendChild(tr);
+        };
+
+</script>

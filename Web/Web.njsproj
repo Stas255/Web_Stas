@@ -43,7 +43,13 @@
     <Content Include="routes\main.js">
       <SubType>Code</SubType>
     </Content>
+    <Content Include="views\editchild.hbs">
+      <SubType>Code</SubType>
+    </Content>
     <Content Include="views\editgr.hbs">
+      <SubType>Code</SubType>
+    </Content>
+    <Content Include="views\editlesson.hbs">
       <SubType>Code</SubType>
     </Content>
     <Content Include="views\lesson.hbs">
@@ -96,6 +102,12 @@
       <SubType>Code</SubType>
     </Content>
     <Content Include="views\main.hbs">
+      <SubType>Code</SubType>
+    </Content>
+    <Content Include="views\pupils.hbs">
+      <SubType>Code</SubType>
+    </Content>
+    <Content Include="views\visit.hbs">
       <SubType>Code</SubType>
     </Content>
   </ItemGroup>

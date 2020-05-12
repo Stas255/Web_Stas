@@ -1,0 +1,100 @@
+<div class="conteiner">
+    <div class="row">
+        <div class="col-12">
+
+            <h1 class="text-center">Відвідування заняття {{data}} у групі {{grname}}</h1>
+
+            <table class="table" id="Visit_table">
+                <thead>
+                    <tr>
+                        <th scope="col">Ім'я</th>
+                        <th scope="col">Статус</th>
+                        {{#if IsAdmin}}
+                        <th scope="col">Edit</th>
+                        {{/if}}
+                    </tr>
+                </thead>
+            </table>
+        </div>
+    </div>
+</div>
+
+<script id="entry-template" type="text/x-handlebars-template"></script>
+<script>
+    var lessid;
+    window.onload = function () {
+    lessid= {{lessid}};
+    var grid = {{grid}};
+    let data = JSON.stringify({
+        find: "child",
+        where: "WHERE gr_id = " + grid,
+        dictinct: "child_id, full_name, ref_id, ifNULL((SELECT visit_id FROM visit WHERE ref_id = child.ref_id AND v_dt BETWEEN (SELECT dt FROM lesson WHERE less_id = " + lessid + " limit 1) - INTERVAL 30 minute and (SELECT dt FROM lesson WHERE less_id = " + lessid + " limit 1) + INTERVAL 90 minute limit 1), 0) AS b "
+    });
+    let request = new XMLHttpRequest();
+    request.open("POST", "/dbSerch", true);
+    request.setRequestHeader("Content-Type", "application/json");
+    var result;
+    setTimeout(request.addEventListener("load", function () {
+        // получаем и парсим ответ сервера
+        let receivedUser = JSON.parse(request.response);
+        result = receivedUser;
+        CreateTable_visit("Visit_table", result);
+
+    }), 5000);
+    request.send(data);
+    };
+
+    function CreateTable_visit(idDivTable, results) {
+        var table = document.getElementById(idDivTable);
+        var tbody = document.createElement("tbody");
+        results.forEach(function (item) { AddArrayInTbody_infor(tbody, item) });
+        table.appendChild(tbody);
+    }
+
+    function AddArrayInTbody_infor(tbody, array) {
+        var tr = document.createElement("tr");
+        AddTHTextInTr(tr, array.full_name);
+        AddTDTextInTr(tr, check(array.b));
+        {{#if IsAdmin}}
+        var td = document.createElement("td");
+        td.appendChild(ReturnFormButton("/addvisit", "post", ["less", "ref"], [lessid, array.ref_id], "success","Був"));
+        td.appendChild(ReturnFormButton("/dellvisit", "post", ["less", "ref"], [lessid, array.ref_id], "danger", "НЕ був"));
+        tr.appendChild(td);
+        {{/if}}
+           tbody.appendChild(tr);
+        }
+            function ReturnFormButton(event, metod, nameInput, valueInput, classButton, textButton ) {
+                var form = document.createElement("form");
+                form.action = event;
+                form.method = metod;
+                if (Array.isArray(nameInput)) {
+                    for (var i = 0; i < nameInput.length; i++) {
+                        var input = document.createElement("input");
+                        input.value = valueInput[i];
+                        input.name = nameInput[i];
+                        input.type = "hidden";
+                        form.appendChild(input);
+                    }
+                } else {
+                    var input = document.createElement("input");
+                    input.value = valueInput;
+                    input.name = nameInput;
+                    input.type = "hidden";
+                    form.appendChild(input);
+                }
+                var btn = document.createElement("button");
+                var cl = "btn btn-" + classButton.toString();
+                btn.className += cl;
+                btn.type = "submit"
+                btn.innerHTML = textButton;
+                form.appendChild(btn);
+                return form;      
+            }
+
+     function check(check) {
+         if (check == 0) {
+             return "Не був";
+         }
+         return "Був";
+     }
+</script>

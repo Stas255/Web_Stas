@@ -1,0 +1,48 @@
+<h1 class="text-center">Редагування заняття {{date}} у групі {{grname}}</h1>
+
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-6">
+            <form action="/editlesson" method="post">
+
+                <label for="full_name">Room</label>
+                <input type="text" class="w-100" name="room" id="room">
+
+                <label for="time">Time</label>
+                <input name="date" class="w-100" id="dateTime" type="datetime-local">
+
+                <input type="number" id="id" hidden name="id" >
+
+                <div class="modal-footer my-3">
+                    <button type="reset" class="btn btn-outline-secondary">Отмена</button>
+                    <button type="submit" class="btn btn-outline-primary">Зберегти</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script id="entry-template" type="text/x-handlebars-template"></script>
+<script>
+    window.onload = function () {
+    var lessid = {{lessid}};
+    let data = JSON.stringify({
+        find: "lesson",
+        where: "WHERE less_id = " + lessid,
+        dictinct: "concat(left(dt,10),\"T\",left(right(dt,8),5)) as dt, room, less_id"
+    });
+    let request = new XMLHttpRequest();
+    request.open("POST", "/dbSerch", true);
+    request.setRequestHeader("Content-Type", "application/json");
+    var result;
+    setTimeout(request.addEventListener("load", function () {
+        // получаем и парсим ответ сервера
+        let receivedUser = JSON.parse(request.response);
+        result = receivedUser[0];
+        document.getElementById("room").value = result.room;
+        document.getElementById("dateTime").value = result.dt;
+        document.getElementById("id").value = result.less_id;
+    }), 5000);
+    request.send(data);
+    }
+</script>

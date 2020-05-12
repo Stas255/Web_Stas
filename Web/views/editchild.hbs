@@ -1,0 +1,90 @@
+<h1 class="text-center">Редагування учня групи {{namegr}}</h1>
+
+
+
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-6">
+            <form action="/updatchild" method="post">
+
+                <input type="text" class="w-100" hidden name="id" value="{{childid}}">
+
+                <label for="full_name">Name</label>
+                <input type="text" class="w-100" id="full_name" name="full_name">
+
+                <label for="ref_id">Ref-id</label>
+                <select class="w-100" name="ref_id" id="ref_id"></select>
+
+                <label for="gr_id">Group</label>
+                <select class="w-100" name="gr_id" id="gr_id"></select>
+
+                <div class="modal-footer my-3">
+                    <button type="reset" class="btn btn-outline-secondary">Отмена</button>
+                    <button type="submit" class="btn btn-outline-primary">Зберегти</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script id="entry-template" type="text/x-handlebars-template">
+</script>
+<script>
+    window.onload = function () {
+    var gr_id = {{grid}};
+    var child_id = {{childid}};
+    let data = JSON.stringify({
+        find: "child",
+        where: " WHERE child_id = " + child_id
+    });
+    let request = new XMLHttpRequest();
+    request.open("POST", "/dbSerch", true);
+    request.setRequestHeader("Content-Type", "application/json");
+    var result;
+    setTimeout(request.addEventListener("load", function () {
+        // получаем и парсим ответ сервера
+        let receivedUser = JSON.parse(request.response);
+        result = receivedUser[0];
+        document.getElementById("full_name").value = result.full_name;
+        AddInRefId("ref_id", result.ref_id);
+        AddInGrId("gr_id", gr_id);
+    }), 5000);
+    request.send(data);
+    };
+
+    function AddInRefId(idSelect, ref_id) {
+        var x = document.getElementById(idSelect);
+        var option = document.createElement("option");
+        option = document.createElement("option");
+        option.text = ref_id;
+        option.value = ref_id;
+        x.add(option);
+        AddSelectRef_ID(idSelect);
+    }
+
+    function AddInGrId(idSelect, gr_id) {
+        let data = JSON.stringify({
+            find: "gr"
+        });
+        let request = new XMLHttpRequest();
+        request.open("POST", "/dbSerch", true);
+        request.setRequestHeader("Content-Type", "application/json");
+        var result;
+        setTimeout(request.addEventListener("load", function () {
+            // получаем и парсим ответ сервера
+            let receivedUser = JSON.parse(request.response);
+            result = receivedUser;
+            var x = document.getElementById(idSelect);
+            result.forEach(element => {
+                option = document.createElement("option");
+                option.text = element.name;
+                option.value = element.gr_id;
+                if (element.gr_id == gr_id)
+                    option.selected = 'selected';
+                x.add(option);
+            });
+        }), 5000);
+        request.send(data);
+    }
+
+</script>
