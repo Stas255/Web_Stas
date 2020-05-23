@@ -24,7 +24,7 @@
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title">Вход</h5>
+                <h5 class="modal-title">Вхід</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
@@ -32,7 +32,7 @@
             <form method="post" action="/login">
                 <div class="modal-body">
                     <div class="form-group">
-                        <label for="exampleInputEmail1">Логин</label>
+                        <label for="exampleInputEmail1">Логін</label>
                         <input type="text" name="login" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Enter email">
                     </div>
                     <div class="form-group">
@@ -61,7 +61,7 @@
                 </button>
             </div>
             <div class="modal-body">
-                <form id="AddFormChild" class="w-100" method="post" action="/addChild">
+                <form>
                     <input class="w-100 form-control" maxlength="40" id="AddFormChild_name" name="name" placeholder="Введіть ім'я дитини" type="text" required>
                     <div class="w-100">
                         <table class="table-add">
@@ -73,21 +73,22 @@
                             </thead>
                             <tbody>
                             <td>
-                                <select name="gr" id="AddFormChild_gr" required>
-                                    <option value="" disabled selected>Виберіть групу для учня</option>
+                                <select name="gr" id="AddFormChild_gr" multiple required>
+                                    <option value="" disabled selected>Виберіть групи для учня</option>
                                 </select>
+                                <div id="Child_error"></div>
                             </td>
                             <td>
                                 <select name="ref" id="AddFormChild_t" required>
                                     <option value="" disabled selected>Виберіть id для учня</option>
-                                </select>
+                                </select>                               
                             </td>
                             </tbody>
                         </table>
                     </div>
                     <div class="modal-footer">
                         <button type="reset" class="btn btn-outline-secondary" data-dismiss="modal">Close</button>
-                        <button type="submit" class="btn btn-outline-primary">Save changes</button>
+                        <button type="button" onclick="CreateChild()" class="btn btn-outline-primary">Save changes</button>
                     </div>
                 </form>
             </div>
@@ -105,15 +106,16 @@
                 </button>
             </div>
             <div class="modal-body">
-                <form class="w-100">
+                <form class="w-100" onsubmit="return deleteRefId();">
                     <div class="dropdown cq-dropdown" data-name='statuses'>
                         <select class="mdb-select colorful-select dropdown-primary md-form" id="t_m" multiple searchable="Search here..">
                             <option value="" disabled selected>Виберіть ref_id</option>
                         </select>
+                        <div id="Refid_error"></div>
                     </div>
                     <div class="modal-footer">
                         <button type="reset" class="btn btn-outline-secondary" data-dismiss="modal">Close</button>
-                        <button type="submit" class="btn btn-outline-primary" onclick="deleteRefId()">Delete changes</button>
+                        <button type="submit" class="btn btn-outline-primary">Delete changes</button>
                     </div>
                 </form>
             </div>
@@ -131,7 +133,7 @@
                 </button>
             </div>
             <div class="modal-body">
-                <form id="Addparent" class="w-100" method="post" action="/createparent">
+                <form id="Addparent" class="w-100" onsubmit="return false">
                     <input class="w-100 form-control" maxlength="40" id="Addparent_name" name="name" placeholder="Введіть ім'я" type="text" required>
                     <div class="w-100">
                         <table class="table-add">
@@ -150,9 +152,10 @@
                             </td>
                             </tbody>
                         </table>
-                        <select class="mdb-select colorful-select dropdown-primary md-form" name="childs" id="childs" searchable="Search here..">
+                        <select class="mdb-select colorful-select dropdown-primary md-form" name="childs" id="childs" multiple searchable="Search here.."required>
                             <option value="" disabled selected>Виберіть дитину</option>
                         </select>
+                        <div id="Parent_error"></div>
                     </div>
                     <div class="modal-footer">
                         <button type="reset" class="btn btn-outline-secondary" data-dismiss="modal">Close</button>
@@ -174,33 +177,83 @@
         AddSelectChilds("childs");
     });
 
-    function GetSelectValues(selectId) {
-        var val = document.getElementById(selectId);
-        var res = [];
-        var opt = val && val.options;
-        for (var i = 0; i < opt.length; i++) {
-            option = opt[i];
-            if (option.selected) {
-                res.push(option.value || option.text);
-            }
+    function CreateParent() {
+        var ids = GetSelectValues("childs");
+        var form = document.getElementById("Addparent");
+        if (ids.length == 0) {
+            document.getElementById('Parent_error').innerHTML = 'Виберіть дитину';
         }
-        return res;
+        else {
+            document.getElementById('Parent_error').innerHTML = '';
+            var name = document.getElementById("Addparent_name").value;
+            var login = document.getElementById("Addparent_login").value;
+            var password = document.getElementById("Addparent_password").value;
+            let data = JSON.stringify({
+                name: name,
+                login: login,
+                password: password,
+                ids: ids
+            });
+            let request = new XMLHttpRequest();
+            request.open("POST", "/createparent", true);
+            request.setRequestHeader("Content-Type", "application/json");
+            setTimeout(request.addEventListener("load", function () {
+                // получаем и парсим ответ сервера
+                let receivedUser = JSON.parse(request.response);
+                if (receivedUser != 0) {
+                    document.getElementById('Parent_error').innerHTML = 'Такий логін вже існує';                   
+                } else {
+                    location.reload(false);
+                }
+            }), 5000);
+            request.send(data);            
+        }
+    }
+    function CreateChild() {
+        var res = GetSelectValues("AddFormChild_gr");
+        if (res.length == 0) {
+            document.getElementById('Child_error').innerHTML = 'Виберіть групи';
+            return false;
+        } else {
+            var name = document.getElementById('AddFormChild_name').value;
+            var ref = document.getElementById('AddFormChild_t').value;
+            let data = JSON.stringify({
+                gr: res,
+                name: name,
+                ref: ref
+            }); 
+            let request = new XMLHttpRequest();
+            request.open("POST", "/addChild", true);
+            request.setRequestHeader("Content-Type", "application/json");
+            setTimeout(request.addEventListener("load", function () {
+                // получаем и парсим ответ сервера
+                location.reload(false);
+            }), 5000);
+            request.send(data);
+        }
     }
 
     function deleteRefId() {
         var res = GetSelectValues("t_m");
-        let data = JSON.stringify({
-            id: res
-        });
-        let request = new XMLHttpRequest();
-        request.open("DELETE", "/delleteRefId", true);
-        request.setRequestHeader("Content-Type", "application/json");
-        setTimeout(request.addEventListener("load", function () {
-            // получаем и парсим ответ сервера
-            let receivedUser = JSON.parse(request.response);
-        }), 5000);
-        request.send(data);
-        console.log(res);
+        if (res.length == 0) {
+            document.getElementById('Refid_error').innerHTML = 'Виберіть ref_id';
+            return false;
+        }
+        else {
+            document.getElementById('Refid_error').innerHTML = '';
+            let data = JSON.stringify({
+                id: res
+            });
+            let request = new XMLHttpRequest();
+            request.open("DELETE", "/delleteRefId", true);
+            request.setRequestHeader("Content-Type", "application/json");
+            setTimeout(request.addEventListener("load", function () {
+                // получаем и парсим ответ сервера
+                let receivedUser = JSON.parse(request.response);
+            }), 5000);
+            request.send(data);
+            return true;
+        }
     }
 </script>
 {{/if}}

@@ -222,3 +222,17 @@ function CreateTable_index(idDivTable,results){
     table.appendChild(tbody);
     document.getElementById(idDivTable).append(table);
 }
+
+function GetSelectValues(selectId) {
+    var val = document.getElementById(selectId);
+    var res = [];
+    var opt = val && val.options;
+    for (var i = 0; i < opt.length; i++) {
+        option = opt[i];
+        if (option.selected) {
+            if (option.value != '')
+                res.push(option.value || option.text);
+        }
+    }
+    return res;
+}

@@ -29,6 +29,10 @@
             <form class="form-inline mt-0 mt-md-0">
                 <button type="button" class="btn btn-add" data-toggle="modal" data-target="#addParent">Додати parent</button>
             </form>
+            <form class="form-inline mt-0 mt-md-0" id="parent_edit" method="get" action="/editParent">
+                <input type="text" hidden name="id" id="id_parent_edit" />
+                <button type="submit" class="btn btn-add">Редагувати користувача</button>
+            </form>
             {{/if}}
             {{#if IsParent}}
             <form class="form-inline mt-0 mt-md-0" id="parent" method="get" action="/parent">
@@ -36,10 +40,23 @@
                 <input type="text" hidden name="name_parent" id="name_parent" />
                 <button type="submit" class="btn btn-add" id="button_parent"></button>
             </form>
+            <form class="form-inline mt-0 mt-md-0" id="parent_edit" method="get" action="/editParent">
+                <input type="text" hidden name="id" id="id_parent_edit" />
+                <button type="submit" class="btn btn-add">Редагувати користувача</button>
+            </form>
             {{/if}}
 
         </ul>
         {{#if IsAdmin}}
+        <form class="form-inline mt-2 mt-md-0  navbar-nav col-auto " method="post" action="/logout">
+            <a onclick="Exit()">
+                <button class="btn btn-lg   border solid 40px;" type="submit">
+                    <i class="fas fa-arrow-circle-left"></i>
+                    Вийти
+                </button>
+            </a>
+        </form>
+        {{else if IsParent}}
         <form class="form-inline mt-2 mt-md-0  navbar-nav col-auto " method="post" action="/logout">
             <a onclick="Exit()">
                 <button class="btn btn-lg   border solid 40px;" type="submit">
@@ -74,7 +91,8 @@
             result = receivedUser[0];
             document.getElementById("id_parent").value = result.id;
             document.getElementById("button_parent").innerHTML = result.full_name;
-            document.getElementById("name_parent").value = result.full_name;       
+            document.getElementById("name_parent").value = result.full_name;
+            document.getElementById("id_parent_edit").value = result.id;
         }), 5000);
         request.send();
     });

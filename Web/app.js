@@ -134,6 +134,7 @@ app.post("/deletelesson", adminRouter.deletelesson_create_post);
 //POST getPerent
 app.post("/createparent", adminRouter.createparent_create_post);
 
+
 /// PERENT ROUTES ///
 
 //POST getPerent
@@ -142,8 +143,14 @@ app.post("/getPerent", parent.DbPerent_create_post);
 //GET parent
 app.get("/parent", parent.parent_create_get);
 
-//POST getPerent
+//POST SerchVisit
 app.post("/SerchVisit", parent.SerchVisit_create_post);
+
+//POST SerchVisit
+app.post("/EditParent", parent.editParent_create_post);
+
+//POST getPerent
+app.get("/editParent", parent.parent_edit_get);
 
 
 app.get("/", function (request, response) {

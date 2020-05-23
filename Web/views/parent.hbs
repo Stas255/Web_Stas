@@ -29,6 +29,7 @@
     var parentid = {{parentId}};
     document.getElementById("Lesson_table").style.display = "none";
     let data = JSON.stringify({
+        dictinct: "full_name, ref_id",
         find: "child",
         where: "WHERE child_id IN(SELECT id_child FROM communication WHERE id_parent = " + parentid+")",
     });

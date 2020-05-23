@@ -1,0 +1,203 @@
+<h1 class="text-center">Користувач</h1>
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-6">
+            <div class="col-12 my-3">
+                    <div class="form-group">
+
+                        {{#if IsAdmin}}
+                        <label>Імя користувача</label>
+                        <select onchange="CreateInformation(this)" style="width:-webkit-fill-available;" class="mdb-select colorful-select dropdown-primary md-form" name="parent_editt" id="parent_editt" searchable="Search here.." required>
+                            <option value="" disabled selected>Виберіть родителя</option>
+                        </select>
+                        <form class="form-inline mt-0 mt-md-0" method="get" action="/parent">
+                            <input type="text" hidden name="id_parent" id="id_parent_edit2" />
+                            <input type="text" hidden name="name_parent" id="name_parent_edit" />
+                            <button type="submit" class="btn btn-add btn-success" id="button_parent_edit" hidden></button>
+                        </form>
+                        {{else}}
+                        <input type="text" class="form-control" id="parent_editt" name="parent_editt" value="{{idParent}}" hidden>
+                        {{/if}}
+                    </div>
+                    <div class="form-group">
+                        <label>Ім'я</label>
+                        <input type="text" class="form-control" id="NameParent">
+                    </div>
+                    <div class="form-group">
+                        <label>Логин</label>
+                        <input type="text" class="form-control" id="loginParent">
+                        <div id="Parent_login_error"></div>
+                    </div>
+                    <div class="form-group">
+                        <label>Старий пароль</label>
+                        <input type="text" class="form-control" id="oldpasswordParent" disabled="disabled">
+                    </div>
+                    <div class="form-group">
+                        <label>Новий пароль</label>
+                        <input type="password" class="form-control" id="newpasswordParent1">
+                    </div>
+                    {{#if IsAdmin}}
+                    <select style="width:-webkit-fill-available;" class="mdb-select colorful-select dropdown-primary md-form" name="childs_edit" id="childs_edit" multiple searchable="Search here.." required>
+                    </select>
+                    {{/if}}
+                    <div id="Parent_error"></div>
+                    <button type="button" class="btn btn-primary" onclick="EditParent()">Змінити</button>
+                <div id="Parent_ok"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script id="entry-template" type="text/x-handlebars-template">
+</script>
+<script>
+    {{#if IsAdmin}}
+    window.onload = function () {
+        let data = JSON.stringify({
+            dictinct: "`id`,`full_name`",
+            find: "personal"
+        });
+        let request = new XMLHttpRequest();
+        request.open("POST", "/dbSerch", true);
+        request.setRequestHeader("Content-Type", "application/json");
+        var result;
+        setTimeout(request.addEventListener("load", function () {
+            // получаем и парсим ответ сервера
+            let receivedUser = JSON.parse(request.response);
+            result = receivedUser;
+            var x1 = document.getElementById("parent_editt");              
+                result.forEach(element => {
+                    option = document.createElement("option");
+                    option.text = element.full_name;
+                    option.value = element.id;
+                    x1.add(option);
+                });                 
+        }), 5000);
+        request.send(data);
+    };
+    {{else}}
+    window.onload = function () {
+        CreateInformation({{idParent}});
+    }
+    {{/if}}
+        function CreateInformation(val) {
+        {{#if IsAdmin}}
+            var parentid = val.value;
+            RemoveSelect();
+        {{else}}
+            var parentid = val;
+        {{/if}}
+        
+    let data = JSON.stringify({
+        find: "personal p",
+        where: "LEFT JOIN communication c ON p.id = c.id_parent WHERE p.id = " +parentid
+    });
+    let request = new XMLHttpRequest();
+    request.open("POST", "/dbSerch", true);
+    request.setRequestHeader("Content-Type", "application/json");
+    var result;
+    setTimeout(request.addEventListener("load", function () {
+        // получаем и парсим ответ сервера
+        let receivedUser = JSON.parse(request.response);
+        result = receivedUser;
+        if (result.length != 0) {
+            document.getElementById("NameParent").value = result[0].full_name;
+            document.getElementById("loginParent").value = result[0].login;
+            document.getElementById("oldpasswordParent").value = result[0].password;           
+            document.getElementById("id_parent_edit2").value = result[0].id;
+            document.getElementById("name_parent_edit").value = result[0].full_name;
+            document.getElementById("button_parent_edit").innerHTML = result[0].full_name;
+            document.getElementById("button_parent_edit").hidden = false;
+            AddSelectChildsAndSelect("childs_edit", result);
+            
+        }
+    }), 5000);
+    request.send(data);
+    }
+    function AddSelectChildsAndSelect(idSelect,arrayIdchild) {
+        let data = JSON.stringify({
+            dictinct: "full_name, child_id",
+            find: "child"
+        });
+        let request = new XMLHttpRequest();
+        request.open("POST", "/dbSerch", true);
+        request.setRequestHeader("Content-Type", "application/json");
+        var result;
+        setTimeout(request.addEventListener("load", function () {
+            // получаем и парсим ответ сервера
+            let receivedUser = JSON.parse(request.response);
+            result = receivedUser;
+            var x = document.getElementById(idSelect);
+            result.forEach(element => {
+                option = document.createElement("option");
+                option.text = element.full_name;
+                option.value = element.child_id;
+                if (IsSelect(element.child_id, arrayIdchild)) {
+                    option.selected = true;
+                }
+                x.add(option);
+            });
+        }), 5000);
+        request.send(data);
+    }
+    function IsSelect(child_id, results) {
+        for (var i = 0; i < results.length; i++) {
+            if (child_id == results[i].id_child) {
+                return true;
+            }
+        }
+        return false;
+    }
+                {{#if IsAdmin}}
+    function RemoveSelect(){
+        var select = document.getElementById("childs_edit");
+        var length = select.options.length;
+        for (i = length - 1; i >= 0; i--) {
+            select.options[i] = null;
+        }
+    }
+    {{/if}}
+    function EditParent() {       
+        document.getElementById('Parent_ok').innerHTML = "";
+        document.getElementById('Parent_login_error').innerHTML = "";
+        var id = document.getElementById("parent_editt").value;
+        var name = document.getElementById("NameParent").value;
+        var login = document.getElementById("loginParent").value;
+        var password;
+        if (document.getElementById("newpasswordParent1").value != "") {
+            password = document.getElementById("newpasswordParent1").value;
+        } else {
+            password = document.getElementById("oldpasswordParent").value;
+        }
+        {{#if IsAdmin}}
+        var childs = GetSelectValues("childs_edit");
+        {{/if}}
+        let data = JSON.stringify({
+            id:id,
+            name: name,
+            login: login,
+            {{#if IsAdmin}}
+            childs_ids: childs,
+            {{/if}}
+            password: password
+            
+        });
+        let request = new XMLHttpRequest();
+        request.open("POST", "/EditParent", true);
+        request.setRequestHeader("Content-Type", "application/json");
+        var result;
+        setTimeout(request.addEventListener("load", function () {
+            // получаем и парсим ответ сервера
+            let receivedUser = JSON.parse(request.response);
+            result = receivedUser;
+            if (result != 0) {
+                document.getElementById('Parent_login_error').innerHTML = 'Такий логін вже існує';
+            }
+            else {
+                location.reload(); 
+            }
+        }), 5000);
+        request.send(data);
+    }
+
+</script>

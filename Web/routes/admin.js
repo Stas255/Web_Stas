@@ -31,7 +31,7 @@ exports.isAdmin = function IsAdmin(request) {
 
 //Перевірка чи це родитель
 exports.isParent = function IsParent(request) {
-    if (localStorage[request.session.id] && JSON.parse(localStorage[request.session.id]).parent) {
+    if ((localStorage[request.session.id] && JSON.parse(localStorage[request.session.id]).parent)) {
         return true;
     } else {
         return false;

@@ -67,7 +67,7 @@ exports.updategroup_create_post = function (request, response) {
     }
 };
 
-//Удаляє ref id
+//Видаляє ref id
 exports.delleteRefId_create_delete = function (request, response) {
     if (admin.isAdmin(request)) {
         var data = request.body;
@@ -88,7 +88,7 @@ exports.delleteRefId_create_delete = function (request, response) {
     }
 };
 
-//Удаляє групу
+//Видаляє групу
 exports.dellgroup_create_post = function (request, response) {
     if (admin.isAdmin(request)) {
         var data = request.body;
@@ -143,14 +143,11 @@ exports.addlesson_create_post = function (request, response) {
 exports.addchild_create_post = function (request, response) {
     if (admin.isAdmin(request)) {
         var data = request.body;
-        var sel = "INSERT INTO child( gr_id, full_name, ref_id) VALUES ( '" + data.group + "', '" + data.name + "', '" + data.id + "')";
-        var sel1 = "DELETE FROM temp WHERE t = '" + data.id + "';";
+        var sel = "CALL AddChild('" + data.gr + "','" + data.name + "','"+data.ref+"')";
         Database.execute(connectionInfo,
             database => database.query(sel)
                 .then(rows => {
-                    return database.query(sel1);
-                }).then(rows => {
-                    response.redirect(request.get('referer'));
+                    response.redirect("/index");
                 })
         );
     }
@@ -195,7 +192,7 @@ exports.updatchild_create_post = function (request, response) {
     }
 };
 
-//Удаляє дитину
+//Видаляє дитину
 exports.dellchild_create_post = function (request, response) {
     if (admin.isAdmin(request)) {
         var data = request.body;
@@ -229,7 +226,7 @@ exports.addvisit_create_post = function (request, response) {
     }
 };
 
-//Удаляє відвідання
+//Видаляє відвідання
 exports.dellvisit_create_post = function (request, response) {
     if (admin.isAdmin(request)) {
         var data = request.body;
@@ -250,7 +247,7 @@ exports.dellvisit_create_post = function (request, response) {
 exports.editlesson_create_get = function (request, response) {
     if (admin.isAdmin(request)) {
         var data = request.query;
-        response.render("parent.hbs",
+        response.render("editlesson.hbs",
             {
                 IsAdmin: true,
                 IsParent: admin.isParent(request),
@@ -299,15 +296,16 @@ exports.deletelesson_create_post = function (request, response) {
     }
 };
 
-//Створює Родителя
+//Створює батьків
 exports.createparent_create_post = function (request, response) {
     if (admin.isAdmin(request)) {
         var data = request.body;
-        var sel = "CALL CreateParent('" + data.name + "','" + data.login + "','" + data.password + "','" + data.childs +"');";
+        var sel = "CALL CreateParent('" + data.name + "','" + data.login + "','" + data.password + "','" + data.ids + "');";
         Database.execute(connectionInfo,
             database => database.query(sel)
                 .then(rows => {
-                    response.redirect(request.get('referer'));
+                    var r = rows[0][0].res;
+                    response.json(r);
                 })
         );
     }

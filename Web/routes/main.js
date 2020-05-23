@@ -16,7 +16,7 @@ Database.execute = function (config, callback) {
     );
 };
 
-//Створює головне меню
+//РЎС‚РІРѕСЂСЋС” РіРѕР»РѕРІРЅРµ РјРµРЅСЋ
 exports.index_create_get = function (request, response) {
 
     response.render("main.hbs",
@@ -26,7 +26,7 @@ exports.index_create_get = function (request, response) {
         });
 };
 
-//Створює список груп
+//РЎС‚РІРѕСЂСЋС” СЃРїРёСЃРѕРє РіСЂСѓРї
 exports.infor_create_get = function (request, response) {
     var id = request.query.id;
     response.render("infor_Table.hbs",
@@ -36,7 +36,7 @@ exports.infor_create_get = function (request, response) {
         });
 };
 
-//Створює список уроків по id
+//РЎС‚РІРѕСЂСЋС” СЃРїРёСЃРѕРє СѓСЂРѕРєС–РІ РїРѕ id
 exports.lesson_create_get = function (request, response) {
     var grid = request.query;
     response.render("lesson.hbs",
@@ -48,7 +48,7 @@ exports.lesson_create_get = function (request, response) {
         });
 };
 
-//Створює список учнів
+//РЎС‚РІРѕСЂСЋС” СЃРїРёСЃРѕРє СѓС‡РЅС–РІ
 exports.pupils_create_get = function (request, response) {
     var grid = request.query.grid;
     response.render("pupils.hbs",
@@ -59,7 +59,7 @@ exports.pupils_create_get = function (request, response) {
         });
 };
 
-//Створює відвідування
+//РЎС‚РІРѕСЂСЋС” РІС–РґРІС–РґСѓРІР°РЅРЅСЏ
 exports.visit_create_get = function (request, response) {
     var data = request.query;
     response.render("visit.hbs",
@@ -73,22 +73,23 @@ exports.visit_create_get = function (request, response) {
         });
 };
 
-//Виходить
+//Р’РёС…С–Рґ
 exports.logout_create_post = function (request, response, next) {
     admin.logout(request);
     response.redirect(request.get('referer'));
 };
 
-//Регистрірує
+//Р РµС”СЃС‚СЂС–СЂСѓС”
 exports.login_create_post = function (request, response) {
     admin.login(response, request);
 };
 
-//Шукає в базі даних
+//РЁСѓРєР°С” РІ Р±Р°Р·С– РґР°РЅРёС…
 exports.dbSerch_create_post = function (request, response) {
     var data = request.body;
     var sel;
-    sel = "SELECT DISTINCT " + (data.hasOwnProperty("dictinct") ? data.dictinct : "*") + " from " + data.find + " " + (data.hasOwnProperty("where") ? (data.where) : "") + (data.hasOwnProperty("order_by") ? (data.order_by) : "") + ";";
+    sel = "SELECT DISTINCT " + (data.hasOwnProperty("dictinct") ? data.dictinct : "*") + " from " + data.find +
+        " " + (data.hasOwnProperty("where") ? (data.where) : "") + (data.hasOwnProperty("order_by") ? (data.order_by) : "") + ";";
     var result = [];
     Database.execute(connectionInfo,
         database => database.query(sel)
@@ -105,7 +106,7 @@ exports.dbSerch_create_post = function (request, response) {
     );
 };
 
-//Шукає в базі даних для index
+//РЁСѓРєР°С” РІ Р±Р°Р·С– РґР°РЅРёС… РґР»СЏ index
 exports.dbSerchIndex_create_post = function (request, response) {
     let data = request.body;
     var sel;
@@ -114,7 +115,7 @@ exports.dbSerchIndex_create_post = function (request, response) {
             ((data.room != "") ? (" l.room = '" + data.room + "'" + " and ") : ("")) + ((data.group != "") ? (" l.gr_id = " + data.group + " and ") : ("")) + "l.dt BETWEEN ' " + data.dateNow + " ' AND ' " + data.dateEnd + "'" + (data.hasOwnProperty("order_by") ? (data.order_by) : "") + " ; ";
     } else {
         console.log("not edit");
-        response.json("Введіть будь-ласка наступні поля: Група або Аудиторія.");
+        response.json("Р’РІРµРґС–С‚СЊ Р±СѓРґСЊ-Р»Р°СЃРєР° РЅР°СЃС‚СѓРїРЅС– РїРѕР»СЏ: Р“СЂСѓРїР° Р°Р±Рѕ РђСѓРґРёС‚РѕСЂС–СЏ.");
     }
     var result;
     var table = "";
@@ -122,7 +123,7 @@ exports.dbSerchIndex_create_post = function (request, response) {
         database => database.query(sel)
             .then(rows => {
                 if (rows.length === 0) {
-                    response.json("Невдалось знайти за вказаними параметрами");
+                    response.json("РќРµ РІРґР°Р»РѕСЃСЏ Р·РЅР°Р№С‚Рё Р·Р° РІРєР°Р·Р°РЅРёРјРё РїР°СЂР°РјРµС‚СЂР°РјРё");
                 }
                 result = rows;
                 response.json(result);

@@ -55,6 +55,9 @@
     <Content Include="views\editlesson.hbs">
       <SubType>Code</SubType>
     </Content>
+    <Content Include="views\editparent.hbs">
+      <SubType>Code</SubType>
+    </Content>
     <Content Include="views\lesson.hbs">
       <SubType>Code</SubType>
     </Content>
