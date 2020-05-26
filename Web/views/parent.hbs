@@ -14,6 +14,9 @@
                             <th scope="col">Група</th>
                             <th scope="col">Дата</th>
                             <th scope="col">Відвідування</th>
+                            {{#if IsAdmin}}
+                            <th scope="col">Edit</th>
+                            {{/if}}
                         </tr>
                     </thead>
                 </table>
@@ -68,31 +71,37 @@
             // получаем и парсим ответ сервера
             let receivedUser = JSON.parse(request.response);
             results = receivedUser;
-            CreateTable_parent("Lesson_table", results);
+            CreateTable_parent("Lesson_table", results,x);
             document.getElementById("Lesson_table").style.display = "table";
         }), 5000);
         request.send(data);
     }
-    function CreateTable_parent(idDivTable, results) {
+    function CreateTable_parent(idDivTable, results,ref_id) {
         var table = document.getElementById(idDivTable);
         var tbodyold = table.getElementsByTagName('tbody');
         for (var i = 0; i < tbodyold.length; i++) {
             tbodyold[i].innerHTML = "";
         }
         var tbody = document.createElement("tbody");
-        results.forEach(function (item) { AddArrayInTbody_infor(tbody, item) });
+        results.forEach(function (item) { AddArrayInTbody_infor(tbody, item, ref_id) });
         table.appendChild(tbody);
     }
 
-    function AddArrayInTbody_infor(tbody, array) {
+    function AddArrayInTbody_infor(tbody, array,ref_id) {
         var tr = document.createElement("tr");
         AddTHTextInTr(tr, array.name);
-        AddTDTextInTr(tr, array.dt);
+        AddTDTextInTr(tr, array.dt); 
         var check = "Не був";
         if (array.b == 1) {
             check = "Був";
         }
         AddTDTextInTr(tr, check);
+        {{#if IsAdmin}}
+        var td = document.createElement("td");
+        td.appendChild(ReturnFormButton_Visit("/addvisit", "post", ["less", "ref"], [array.less_id, ref_id], "success", "Був"));
+        td.appendChild(ReturnFormButton_Visit("/dellvisit", "post", ["less", "ref"], [array.less_id, ref_id], "danger", "НЕ був"));
+        tr.appendChild(td);
+        {{/if}}      
         tbody.appendChild(tr);
     }
 </script>

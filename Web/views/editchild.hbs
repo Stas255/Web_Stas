@@ -35,7 +35,7 @@
     var child_id = {{childid}};
     let data = JSON.stringify({
         find: "child",
-        where: " WHERE child_id = " + child_id
+        where: " WHERE id = " + child_id
     });
     let request = new XMLHttpRequest();
     request.open("POST", "/dbSerch", true);
@@ -65,7 +65,7 @@
     function AddInGrId(idSelect, gr_id) {
         let data = JSON.stringify({
             find: "gr",
-            where: "WHERE`gr_id` NOT IN(SELECT gr_id FROM child WHERE child_id = "+{{childid}}+") OR `gr_id` = "+{{grid}}+""
+            where: "WHERE`gr_id` NOT IN(SELECT gr_id FROM child WHERE child_id = (SELECT child_id FROM child WHERE id = "+{{childid}}+")) OR `gr_id` = "+{{grid}}+""
         });
         let request = new XMLHttpRequest();
         request.open("POST", "/dbSerch", true);

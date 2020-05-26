@@ -29,6 +29,7 @@ exports.editgroup_create_get = function (request, response) {
             });
     }
     else {
+        AddIp(request);
         response.redirect("/index");
     }
 };
@@ -46,6 +47,7 @@ exports.editgroup_create_post = function (request, response) {
         );
     }
     else {
+        AddIp(request);
         response.redirect("/index");
     }
 };
@@ -63,6 +65,7 @@ exports.updategroup_create_post = function (request, response) {
         );
     }
     else {
+        AddIp(request);
         response.redirect("/index");
     }
 };
@@ -84,6 +87,7 @@ exports.delleteRefId_create_delete = function (request, response) {
         );
     }
     else {
+        AddIp(request);
         response.redirect("/index");
     }
 };
@@ -101,6 +105,7 @@ exports.dellgroup_create_post = function (request, response) {
         );
     }
     else {
+        AddIp(request);
         response.redirect("/index");
     }
 };
@@ -118,6 +123,7 @@ exports.addgroup_create_post = function (request, response) {
         );
     }
     else {
+        AddIp(request);
         response.redirect("/index");
     }
 };
@@ -135,6 +141,7 @@ exports.addlesson_create_post = function (request, response) {
         );
     }
     else {
+        AddIp(request);
         response.redirect("/index");
     }
 };
@@ -152,6 +159,7 @@ exports.addchild_create_post = function (request, response) {
         );
     }
     else {
+        AddIp(request);
         response.redirect("/index");
     }
 }
@@ -170,6 +178,7 @@ exports.editchild_create_get = function (request, response) {
             });
     }
     else {
+        AddIp(request);
         response.redirect("/index");
     }
 }
@@ -179,7 +188,7 @@ exports.editchild_create_get = function (request, response) {
 exports.updatchild_create_post = function (request, response) {
     if (admin.isAdmin(request)) {
         var data = request.body;
-        var sel = "UPDATE child SET gr_id= "+data.gr_id+", full_name = '"+data.full_name+"', ref_id = '"+data.ref_id+"' WHERE child_id = "+data.id+";";
+        var sel = "UPDATE child SET gr_id= "+data.gr_id+", full_name = '"+data.full_name+"', ref_id = '"+data.ref_id+"' WHERE id = "+data.id+";";
         Database.execute(connectionInfo,
             database => database.query(sel)
                 .then(rows => {
@@ -188,6 +197,7 @@ exports.updatchild_create_post = function (request, response) {
         );
     }
     else {
+        AddIp(request);
         response.redirect("/index");
     }
 };
@@ -196,7 +206,7 @@ exports.updatchild_create_post = function (request, response) {
 exports.dellchild_create_post = function (request, response) {
     if (admin.isAdmin(request)) {
         var data = request.body;
-        var sel = "DELETE FROM child WHERE child_id = " + data.child_id+";";
+        var sel = "DELETE FROM child WHERE id = " + data.child_id+";";
         Database.execute(connectionInfo,
             database => database.query(sel)
                 .then(rows => {
@@ -205,6 +215,7 @@ exports.dellchild_create_post = function (request, response) {
         );
     }
     else {
+        AddIp(request);
         response.redirect("/index");
     }
 };
@@ -222,6 +233,7 @@ exports.addvisit_create_post = function (request, response) {
         );
     }
     else {
+        AddIp(request);
         response.redirect("/index");
     }
 };
@@ -239,6 +251,7 @@ exports.dellvisit_create_post = function (request, response) {
         );
     }
     else {
+        AddIp(request);
         response.redirect("/index");
     }
 };
@@ -257,6 +270,7 @@ exports.editlesson_create_get = function (request, response) {
             });
     }
     else {
+        AddIp(request);
         response.redirect("/index");
     }
 };
@@ -274,6 +288,7 @@ exports.editlesson_create_post = function (request, response) {
         );
     }
     else {
+        AddIp(request);
         response.redirect("/index");
     }
 };
@@ -292,6 +307,7 @@ exports.deletelesson_create_post = function (request, response) {
         );
     }
     else {
+        AddIp(request);
         response.redirect("/index");
     }
 };
@@ -310,6 +326,35 @@ exports.createparent_create_post = function (request, response) {
         );
     }
     else {
+        AddIp(request);
         response.redirect("/index");
+    }
+};
+
+//Розблоковує ip
+exports.unblockip_create_post = function (request, response) {
+    var ip = request.body;
+    localStorage[ip.ip] = JSON.stringify(0);
+    if (ip.index) {
+        response.redirect("/index");
+    }
+};
+
+//Створює сайт з блокировкой
+exports.blockip_create_get = function (request, response) {
+        response.render("blockIp.hbs",
+            {
+                IP: request.ip
+            });
+};
+
+//Додати ip
+function AddIp (request) {
+    var ip = request.ip;
+    if (JSON.parse(localStorage[ip]) != null) {
+        var num = JSON.parse(localStorage[ip]);
+        localStorage[ip] = JSON.stringify(num + 1);
+    } else {
+        localStorage[ip] = JSON.stringify(1);
     }
 };

@@ -46,6 +46,9 @@
     <Content Include="routes\parent.js">
       <SubType>Code</SubType>
     </Content>
+    <Content Include="views\blockIp.hbs">
+      <SubType>Code</SubType>
+    </Content>
     <Content Include="views\editchild.hbs">
       <SubType>Code</SubType>
     </Content>

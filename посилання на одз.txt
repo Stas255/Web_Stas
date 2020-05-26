@@ -1,0 +1,3 @@
+домен: http://odz-test.tolstonozhenko.com.ua/
+github: https://github.com/Stas255/Web_Stas
+google: https://drive.google.com/drive/folders/1bmt_byxgNeLGzsjTLHPL6cp8sApSOxiv?usp=sharing

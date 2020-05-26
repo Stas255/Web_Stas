@@ -19,7 +19,7 @@ function AddSelectGroup(idSelect) {
             option.text = element.result;
             option.value = element.id;
             x.add(option);
-            CheckGroupAndRoom("gr_id");
+            //CheckGroupAndRoom("gr_id");
         });
     }), 5000);
     request.send(data);
@@ -49,7 +49,7 @@ function AddSelectRoom() {
                     option.text = element.result;
                     option.value = element.id;
                     x.add(option);
-                    CheckGroupAndRoom("room");
+                    //CheckGroupAndRoom("room");
                 });
             }),
         5000);
@@ -108,19 +108,19 @@ function AddSelectChilds(idSelect) {
 
 
 function CheckCreateSession(sessionId, sessionAdd) {
-    if (localStorage.getItem(sessionId) == null) {
-        localStorage.setItem(sessionId, sessionAdd);
+    if (sessionStorage.getItem(sessionId) == null) {
+        sessionStorage.setItem(sessionId, sessionAdd);
         return sessionAdd;
     } else {
-        return localStorage.getItem(sessionId);
+        return sessionStorage.getItem(sessionId);
     }
 }
 
 function ReplaceSession(sessionId, sessionReplace) {
-    if (localStorage.getItem(sessionId) == null) {
+    if (sessionStorage.getItem(sessionId) == null) {
         console.log("Error replace session");
     } else {
-        localStorage.setItem(sessionId, sessionReplace);
+        sessionStorage.setItem(sessionId, sessionReplace);
     }
 }
 
@@ -235,4 +235,32 @@ function GetSelectValues(selectId) {
         }
     }
     return res;
+}
+
+function ReturnFormButton_Visit(event, metod, nameInput, valueInput, classButton, textButton) {
+    var form = document.createElement("form");
+    form.action = event;
+    form.method = metod;
+    if (Array.isArray(nameInput)) {
+        for (var i = 0; i < nameInput.length; i++) {
+            var input = document.createElement("input");
+            input.value = valueInput[i];
+            input.name = nameInput[i];
+            input.type = "hidden";
+            form.appendChild(input);
+        }
+    } else {
+        var input = document.createElement("input");
+        input.value = valueInput;
+        input.name = nameInput;
+        input.type = "hidden";
+        form.appendChild(input);
+    }
+    var btn = document.createElement("button");
+    var cl = "btn btn-" + classButton.toString();
+    btn.className += cl;
+    btn.type = "submit"
+    btn.innerHTML = textButton;
+    form.appendChild(btn);
+    return form;
 }

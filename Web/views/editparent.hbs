@@ -40,7 +40,7 @@
                     <select style="width:-webkit-fill-available;" class="mdb-select colorful-select dropdown-primary md-form" name="childs_edit" id="childs_edit" multiple searchable="Search here.." required>
                     </select>
                     {{/if}}
-                    <div id="Parent_error"></div>
+                    <div id="edit_Parent_error"></div>
                     <button type="button" class="btn btn-primary" onclick="EditParent()">Змінити</button>
                 <div id="Parent_ok"></div>
             </div>
@@ -103,12 +103,14 @@
         if (result.length != 0) {
             document.getElementById("NameParent").value = result[0].full_name;
             document.getElementById("loginParent").value = result[0].login;
-            document.getElementById("oldpasswordParent").value = result[0].password;           
+            document.getElementById("oldpasswordParent").value = result[0].password;   
+            {{#if IsAdmin}}
             document.getElementById("id_parent_edit2").value = result[0].id;
             document.getElementById("name_parent_edit").value = result[0].full_name;
             document.getElementById("button_parent_edit").innerHTML = result[0].full_name;
             document.getElementById("button_parent_edit").hidden = false;
             AddSelectChildsAndSelect("childs_edit", result);
+            {{/if}}
             
         }
     }), 5000);

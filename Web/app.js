@@ -34,17 +34,28 @@ app.use(session({
     saveUninitialized: true
 }));
 
+//POST unblock
+app.post("/unblock", adminRouter.unblockip_create_post);
+
+//POST block
+app.use("/BlockIp", adminRouter.blockip_create_get);
+
 app.use(function (request, response, next) {
-    if (!request.session.params) {
-        var ses = {
-            admin: false,
-            parent: false,
-            id_parent:0
-        }       
-        localStorage[request.session.id] = JSON.stringify(ses);
+    if (JSON.parse(localStorage[request.ip]) > 3) {
+        response.redirect("/BlockIp");
     }
-    request.session.params = JSON.parse(localStorage[request.sessionID]);
-    next();
+    else {
+        if (!request.session.params) {
+            var ses = {
+                admin: false,
+                parent: false,
+                id_parent: 0
+            }
+            localStorage[request.session.id] = JSON.stringify(ses);
+        }
+        request.session.params = JSON.parse(localStorage[request.sessionID]);
+        next();
+    }
 });
 
 app.use((req, res, next) => {
@@ -133,7 +144,6 @@ app.post("/deletelesson", adminRouter.deletelesson_create_post);
 
 //POST getPerent
 app.post("/createparent", adminRouter.createparent_create_post);
-
 
 /// PERENT ROUTES ///
 

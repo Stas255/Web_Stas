@@ -31,6 +31,7 @@ exports.DbPerent_create_post = function (request, response) {
         );
     }
     else {
+        AddIp(request);
         response.redirect("/index");
     }
 };
@@ -48,6 +49,7 @@ exports.parent_create_get = function (request, response) {
             });
     }
     else {
+        AddIp(request);
         response.redirect("/index");
     }
 };
@@ -66,6 +68,7 @@ exports.SerchVisit_create_post = function (request, response) {
         );
     }
     else {
+        AddIp(request);
         response.redirect("/index");
     }
 };
@@ -89,6 +92,7 @@ exports.editParent_create_post = function (request, response) {
         );
     }
     else {
+        AddIp(request);
         response.redirect("/index");
     }
 };
@@ -105,6 +109,18 @@ exports.parent_edit_get = function (request, response) {
             });
     }
     else {
+        AddIp(request);
         response.redirect("/index");
+    }
+};
+
+//Додати ip
+function AddIp(request) {
+    var ip = request.ip;
+    if (JSON.parse(localStorage[ip]) != null) {
+        var num = JSON.parse(localStorage[ip]);
+        localStorage[ip] = JSON.stringify(num + 1);
+    } else {
+        localStorage[ip] = JSON.stringify(1);
     }
 };

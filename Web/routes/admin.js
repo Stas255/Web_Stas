@@ -1,6 +1,6 @@
 const LocalStorage = require('node-localstorage').LocalStorage;
 localStorage = new LocalStorage('./scratch');
-
+const admin = require('./adminRouter.js');
 const Database = require('../db');
 
 const connectionInfo = {
@@ -70,6 +70,7 @@ function CheckAndRegistAdmin(result, request) {
             ses.admin = true;
             localStorage[request.session.id] = JSON.stringify(ses);
         }
+        admin.unblockip_create_post(request, result);
     }
 };
 
@@ -90,6 +91,7 @@ function CheckAndRegistP(result, request) {
             ses.id_parent = result.id;
             localStorage[request.session.id] = JSON.stringify(ses);
         }
+        admin.unblockip_create_post(request, result);
     }
 };
 

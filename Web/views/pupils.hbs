@@ -51,8 +51,8 @@
         var tr = document.createElement("tr");
         AddTHTextInTr(tr, array.full_name);
         {{#if IsAdmin}}
-        CreateButton_inforInForm(tr, "warning", [array.child_id, array.name, array.gr_id], "/editchild", "pen", ["child_id","namegr","gr_id"], "get");
-        CreateButton_inforInForm(tr, "danger", array.child_id, "/delldellchild", "trash-alt", "child_id", "post");
+        CreateButton_inforInForm(tr, "warning", [array.id, array.name, array.gr_id], "/editchild", "pen", ["child_id","namegr","gr_id"], "get");
+        CreateButton_inforInForm(tr, "danger", array.id, "/dellchild", "trash-alt", "child_id", "post");
         {{/if}}
                 tbody.appendChild(tr);
         };
