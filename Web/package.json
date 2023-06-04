@@ -20,7 +20,7 @@
     "express-session": "^1.17.1",
     "fs": "0.0.1-security",
     "handlebars-helper-css": "^0.1.0",
-    "hbs": "^4.1.1",
+    "hbs": "^4.2.0",
     "morgan": "^1.7.0",
     "mysql": "^2.18.1",
     "mysql2": "^2.1.0",
